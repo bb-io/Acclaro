@@ -17,6 +17,18 @@ namespace Apps.Acclaro.Actions
     [ActionList]
     public class FileActions
     {
+        [Action("List all order files", Description = "List all order files")]
+        public ListFilesResponse ListOrderFiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        [ActionParameter] string orderId)
+        {
+            var client = new AcclaroClient();
+            var request = new AcclaroRequest($"/orders/{orderId}/files-info", Method.Get, authenticationCredentialsProviders);
+            return new ListFilesResponse()
+            {
+                Files = client.Get<ResponseWrapper<List<FileInfoStatusDto>>>(request).Data
+            };
+        }
+
         [Action("Get file information", Description = "Get file information by Id")]
         public FileInfoStatusDto? GetFileInfo(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] string orderId, [ActionParameter] string fileId)

@@ -25,7 +25,7 @@ namespace Apps.Acclaro.Actions
         }
 
         [Action("Get order", Description = "Get order by Id")]
-        public OrderDto? GetClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public OrderDto? GetOrder(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
                 [ActionParameter] string orderId)
         {
             var client = new AcclaroClient();
@@ -46,7 +46,7 @@ namespace Apps.Acclaro.Actions
         }
 
         [Action("Delete order", Description = "Delete order")]
-        public void DeleteClient(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        public void DeleteOrder(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] string orderId)
         {
             var client = new AcclaroClient();
