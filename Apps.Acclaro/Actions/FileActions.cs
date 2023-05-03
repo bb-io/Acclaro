@@ -39,6 +39,17 @@ namespace Apps.Acclaro.Actions
             return client.Execute<ResponseWrapper<FileInfoDto>>(request).Data.Data;
         }
 
+        [Action("Upload reference file", Description = "Upload reference file (glossaries, style guides etc)")]
+        public FileInfoDto? UploadReferenceFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+            [ActionParameter] UploadReferenceFileRequest input)
+        {
+            var client = new AcclaroClient();
+            var request = new AcclaroRequest($"/orders/{input.OrderId}/reference-file", Method.Post, authenticationCredentialsProviders);
+            request.AddParameter("orderid", input.OrderId);
+            request.AddFile("file", input.File, input.FileName);
+            return client.Execute<ResponseWrapper<FileInfoDto>>(request).Data.Data;
+        }
+
         [Action("Download file", Description = "Download order file by Id")]
         public FileDataResponse? DownloadFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] string orderId, [ActionParameter] string fileId)
