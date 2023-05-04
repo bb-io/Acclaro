@@ -32,5 +32,23 @@ namespace Apps.Acclaro.Actions
             var request = new AcclaroRequest($"/orders/{orderId}/quote-details", Method.Get, authenticationCredentialsProviders);
             return client.Get<ResponseWrapper<QuoteDetailsDto>>(request).Data;
         }
+
+        [Action("Approve quote", Description = "Approve quote by order Id")]
+        public OrderDto? ApproveQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+                [ActionParameter] string orderId)
+        {
+            var client = new AcclaroClient();
+            var request = new AcclaroRequest($"/orders/{orderId}/quote-approve", Method.Post, authenticationCredentialsProviders);
+            return client.Get<ResponseWrapper<OrderDto>>(request).Data;
+        }
+
+        [Action("Decline quote", Description = "Decline quote by order Id")]
+        public OrderDto? DeclineQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+                [ActionParameter] string orderId)
+        {
+            var client = new AcclaroClient();
+            var request = new AcclaroRequest($"/orders/{orderId}/quote-decline", Method.Post, authenticationCredentialsProviders);
+            return client.Get<ResponseWrapper<OrderDto>>(request).Data;
+        }
     }
 }
