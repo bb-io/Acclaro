@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Apps.Acclaro.Dtos
@@ -16,7 +17,7 @@ namespace Apps.Acclaro.Dtos
         public string Originalfilename { get; set; }
         public string Filename { get; set; }
 
-        [JsonProperty("plunet-filename")]
+        [JsonPropertyName("plunet-filename")] 
         public string PlunetFilename { get; set; }
         public string Encoding { get; set; }
         public string Mimetype { get; set; }

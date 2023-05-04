@@ -9,7 +9,7 @@ namespace Apps.Acclaro.Models.Requests.Strings
     public class AddStringRequest
     {
         public string Value { get; set; }
-        public List<string> TargetLang { get; set; }
+        public string TargetLang { get; set; }
         public string SourceLang { get; set; }
         public string Key { get; set; }
         public string Callback { get; set; }

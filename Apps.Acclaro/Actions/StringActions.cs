@@ -39,14 +39,21 @@ namespace Apps.Acclaro.Actions
         {
             var client = new AcclaroClient();
             var request = new AcclaroRequest($"/orders/{orderId}/strings", Method.Post, authenticationCredentialsProviders);
-            request.AddJsonBody(new
-            {
-                value = stringData.Value,
-                target_lang = stringData.TargetLang,
-                source_lang = stringData.SourceLang,
-                key = stringData.Key,
-                callback = stringData.Callback,
-            });
+            request.AddJsonBody(
+                new
+                {
+                    strings = new[]
+                    {
+                        new
+                        {
+                            value = stringData.Value,
+                            target_lang = new[] { stringData.TargetLang },
+                            source_lang = stringData.SourceLang,
+                            key = stringData.Key,
+                            callback = stringData.Callback,
+                        }
+                    }
+                });
             return client.Execute<ResponseWrapper<StringsWrapper>>(request).Data.Data.Strings.First();
         }
 
