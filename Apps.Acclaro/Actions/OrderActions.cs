@@ -84,6 +84,40 @@ namespace Apps.Acclaro.Actions
             var request = new AcclaroRequest($"/orders/{orderId}/submit", Method.Post, authenticationCredentialsProviders);
             client.Execute(request);
         }
+
+        [Action("Add order callback", Description = "Add order update callback")]
+        public void AddOrderCallback(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] AddOrderCallbackRequest input)
+        {
+            var client = new AcclaroClient();
+            var request = new AcclaroRequest($"/orders/{input.OrderId}/callback", Method.Post, authenticationCredentialsProviders);
+            request.AddParameter("url", input.CallbackUrl);
+            client.Execute(request);
+        }
+
+        [Action("Remove order callback", Description = "Remove order update callback")]
+        public void RemoveOrderCallback(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] string orderId)
+        {
+            var client = new AcclaroClient();
+            var request = new AcclaroRequest($"/orders/{orderId}/callback", Method.Delete, authenticationCredentialsProviders);
+            client.Execute(request);
+        }
+
+        [Action("Add order comment callback", Description = "Add order comment callback")]
+        public void AddOrderCommentCallback(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] AddOrderCallbackRequest input)
+        {
+            var client = new AcclaroClient();
+            var request = new AcclaroRequest($"/orders/{input.OrderId}/comment/callback", Method.Post, authenticationCredentialsProviders);
+            request.AddParameter("url", input.CallbackUrl);
+            client.Execute(request);
+        }
+
+        [Action("Remove order comment callback", Description = "Remove order comment callback")]
+        public void RemoveOrderCommentCallback(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders, [ActionParameter] string orderId)
+        {
+            var client = new AcclaroClient();
+            var request = new AcclaroRequest($"/orders/{orderId}/comment/callback", Method.Delete, authenticationCredentialsProviders);
+            client.Execute(request);
+        }
     }
 }
 
