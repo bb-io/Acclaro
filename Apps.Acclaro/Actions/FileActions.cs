@@ -6,11 +6,7 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using File = Blackbird.Applications.Sdk.Common.Files.File;
 
 namespace Apps.Acclaro.Actions
 {
@@ -47,7 +43,7 @@ namespace Apps.Acclaro.Actions
             request.AddParameter("orderid", input.OrderId);
             request.AddParameter("sourcelang", input.Sourcelang);
             request.AddParameter("targetlang", input.Targetlang);
-            request.AddFile("file", input.File, input.FileName);
+            request.AddFile("file", input.File.Bytes, input.File.Name);
             return client.Execute<ResponseWrapper<FileInfoDto>>(request).Data.Data;
         }
 
@@ -58,7 +54,7 @@ namespace Apps.Acclaro.Actions
             var client = new AcclaroClient();
             var request = new AcclaroRequest($"/orders/{input.OrderId}/reference-file", Method.Post, authenticationCredentialsProviders);
             request.AddParameter("orderid", input.OrderId);
-            request.AddFile("file", input.File, input.FileName);
+            request.AddFile("file", input.File.Bytes, input.File.Name);
             return client.Execute<ResponseWrapper<FileInfoDto>>(request).Data.Data;
         }
 
@@ -68,9 +64,18 @@ namespace Apps.Acclaro.Actions
         {
             var client = new AcclaroClient();
             var request = new AcclaroRequest($"/orders/{orderId}/files/{fileId}", Method.Get, authenticationCredentialsProviders);
+            var response = client.Get(request);
+            var filenameHeader = response.ContentHeaders.First(h => h.Name == "Content-Disposition");
+            var filename = filenameHeader.Value.ToString().Split('"')[1];
+            var contentType = response.ContentType;
+            
             return new FileDataResponse()
             {
-                File = client.Get(request).RawBytes
+                File = new File(response.RawBytes)
+                {
+                    Name = filename,
+                    ContentType = contentType
+                }
             };
         }
 

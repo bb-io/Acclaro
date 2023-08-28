@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using File = Blackbird.Applications.Sdk.Common.Files.File;
 
 namespace Apps.Acclaro.Models.Requests.Files
 {
@@ -11,7 +7,6 @@ namespace Apps.Acclaro.Models.Requests.Files
         public string OrderId { get; set; }
         public string Sourcelang { get; set; }
         public string Targetlang { get; set; }
-        public byte[] File { get; set; }
-        public string FileName { get; set; }
+        public File File { get; set; }
     }
 }
