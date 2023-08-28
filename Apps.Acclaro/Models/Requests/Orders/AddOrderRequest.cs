@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.Acclaro.Models.Requests.Orders
 {
     public class AddOrderRequest
     {
         public string Name { get; set; }
+        
         public string Comment { get; set; }
+        
+        [Display("Due date")]
         public string DueDate { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace Apps.Acclaro.Actions
             };
         }
 
-        [Action("Get file information", Description = "Get file information by Id")]
+        [Action("Get file information", Description = "Get file information by ID")]
         public FileInfoStatusDto? GetFileInfo(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] string orderId, [ActionParameter] string fileId)
         {
@@ -58,7 +58,7 @@ namespace Apps.Acclaro.Actions
             return client.Execute<ResponseWrapper<FileInfoDto>>(request).Data.Data;
         }
 
-        [Action("Download file", Description = "Download order file by Id")]
+        [Action("Download file", Description = "Download order file by ID")]
         public FileDataResponse? DownloadFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
             [ActionParameter] string orderId, [ActionParameter] string fileId)
         {

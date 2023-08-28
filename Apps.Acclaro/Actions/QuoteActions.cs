@@ -4,18 +4,13 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Apps.Acclaro.Actions
 {
     [ActionList]
     public class QuoteActions
     {
-        [Action("Get quote", Description = "Get quote by order Id")]
+        [Action("Get quote", Description = "Get quote by order ID")]
         public OrderDto? GetQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
                 [ActionParameter] string orderId)
         {
@@ -24,7 +19,7 @@ namespace Apps.Acclaro.Actions
             return client.Get<ResponseWrapper<OrderDto>>(request).Data;
         }
 
-        [Action("Get quote details", Description = "Get quote details by order Id")]
+        [Action("Get quote details", Description = "Get quote details by order ID")]
         public QuoteDetailsDto? GetQuoteDetails(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
                 [ActionParameter] string orderId)
         {
@@ -33,7 +28,7 @@ namespace Apps.Acclaro.Actions
             return client.Get<ResponseWrapper<QuoteDetailsDto>>(request).Data;
         }
 
-        [Action("Approve quote", Description = "Approve quote by order Id")]
+        [Action("Approve quote", Description = "Approve quote by order ID")]
         public OrderDto? ApproveQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
                 [ActionParameter] string orderId)
         {
@@ -42,7 +37,7 @@ namespace Apps.Acclaro.Actions
             return client.Get<ResponseWrapper<OrderDto>>(request).Data;
         }
 
-        [Action("Decline quote", Description = "Decline quote by order Id")]
+        [Action("Decline quote", Description = "Decline quote by order ID")]
         public OrderDto? DeclineQuote(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
                 [ActionParameter] string orderId)
         {

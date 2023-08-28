@@ -1,31 +1,27 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Apps.Acclaro.Connections
 {
     public class ConnectionDefinition : IConnectionDefinition
     {
 
-        public IEnumerable<ConnectionPropertyGroup> ConnectionPropertyGroups => new List<ConnectionPropertyGroup>()
+        public IEnumerable<ConnectionPropertyGroup> ConnectionPropertyGroups => new List<ConnectionPropertyGroup>
         {
-            new ConnectionPropertyGroup
+            new()
             {
                 Name = "Developer API token",
                 AuthenticationType = ConnectionAuthenticationType.Undefined,
                 ConnectionUsage = ConnectionUsage.Actions,
                 ConnectionProperties = new List<ConnectionProperty>()
                 {
-                    new ConnectionProperty("apiToken"),
+                    new("apiToken") { DisplayName = "API token" },
                 }
             }
         };
 
-        public IEnumerable<AuthenticationCredentialsProvider> CreateAuthorizationCredentialsProviders(Dictionary<string, string> values)
+        public IEnumerable<AuthenticationCredentialsProvider> CreateAuthorizationCredentialsProviders(
+            Dictionary<string, string> values)
         {
             var apiToken = values.First(v => v.Key == "apiToken");
             yield return new AuthenticationCredentialsProvider(

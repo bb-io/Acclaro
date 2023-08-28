@@ -1,19 +1,11 @@
 ﻿using Apps.Acclaro.Dtos;
-using Apps.Acclaro.Models.Requests.Files;
-using Apps.Acclaro.Models.Requests.Orders;
 using Apps.Acclaro.Models.Requests.Strings;
 using Apps.Acclaro.Models.Responses;
-using Apps.Acclaro.Models.Responses.Orders;
 using Apps.Acclaro.Models.Responses.Strings;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Apps.Acclaro.Actions
 {
@@ -57,7 +49,7 @@ namespace Apps.Acclaro.Actions
             return client.Execute<ResponseWrapper<StringsWrapper>>(request).Data.Data.Strings.First();
         }
 
-        [Action("Get string", Description = "Get string by Id")]
+        [Action("Get string", Description = "Get string by ID")]
         public StringListDto? GetString(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
                 [ActionParameter] string orderId, [ActionParameter] string stringId)
         {

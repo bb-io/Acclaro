@@ -24,7 +24,7 @@ namespace Apps.Acclaro.Actions
             };
         }
 
-        [Action("Get order", Description = "Get order by Id")]
+        [Action("Get order", Description = "Get order by ID")]
         public OrderDto? GetOrder(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
                 [ActionParameter] string orderId)
         {
