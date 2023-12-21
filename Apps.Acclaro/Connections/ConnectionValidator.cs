@@ -1,5 +1,7 @@
 ﻿
 using Apps.Acclaro.Actions;
+using Apps.Acclaro.Dtos;
+using Apps.Acclaro.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
 using RestSharp;
@@ -11,10 +13,11 @@ namespace Apps.Acclaro.Connections
         public async ValueTask<ConnectionValidationResponse> ValidateConnection(
        IEnumerable<AuthenticationCredentialsProvider> authProviders, CancellationToken cancellationToken)
         {
-            var actions = new OrderActions();
+            var client = new AcclaroClient();
+            var request = new AcclaroRequest("/info/language-pairs", Method.Get, authProviders);
             try
             {
-                actions.ListAllOrders(authProviders);
+                var result = client.Get<ResponseWrapper<List<LanguageCombinationDto>>>(request);
                 return new ConnectionValidationResponse
                 {
                     IsValid = true,

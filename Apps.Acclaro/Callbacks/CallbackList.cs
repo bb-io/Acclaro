@@ -17,15 +17,15 @@ namespace Apps.Acclaro.Callbacks
             };
         }
 
-        [Webhook("On order comment added", Description = "On order comment added")]
-        public async Task<WebhookResponse<EmptyPayload>> OrderCommentAdded(WebhookRequest webhookRequest)
-        {
-            return new WebhookResponse<EmptyPayload>
-            {
-                HttpResponseMessage = null,
-                Result = new EmptyPayload()
-            };
-        }
+        //[Webhook("On order comment added", Description = "On order comment added")]
+        //public async Task<WebhookResponse<EmptyPayload>> OrderCommentAdded(WebhookRequest webhookRequest)
+        //{
+        //    return new WebhookResponse<EmptyPayload>
+        //    {
+        //        HttpResponseMessage = null,
+        //        Result = new EmptyPayload()
+        //    };
+        //}
 
         [Webhook("On order string updated", Description = "On order string updated")]
         public async Task<WebhookResponse<StringUpdatePayload>> OrderStringUpdated(WebhookRequest webhookRequest)

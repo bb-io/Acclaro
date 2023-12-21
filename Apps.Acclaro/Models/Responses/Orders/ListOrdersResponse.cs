@@ -2,7 +2,7 @@
 
 namespace Apps.Acclaro.Models.Responses.Orders
 {
-    public class ListAllOrdersResponse
+    public class ListOrdersResponse
     {
         public IEnumerable<OrderDto> Orders { get; set; }
     }

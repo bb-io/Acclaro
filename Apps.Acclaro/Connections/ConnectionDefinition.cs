@@ -15,7 +15,7 @@ namespace Apps.Acclaro.Connections
                 ConnectionUsage = ConnectionUsage.Actions,
                 ConnectionProperties = new List<ConnectionProperty>()
                 {
-                    new("apiToken") { DisplayName = "API token" },
+                    new("apiToken") { DisplayName = "API token", Sensitive = true },
                 }
             }
         };

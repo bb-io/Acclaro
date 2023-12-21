@@ -22,10 +22,11 @@ namespace Apps.Acclaro.Dtos
         public string TargetLang { get; set; }
    
         public string Key { get; set; }
-        
+
+        [Display("Source text")]
         public string Value { get; set; }
 
-        [Display("Translated value")]
+        [Display("Translated text")]
         [JsonPropertyName("translated_value")]
         public string TranslatedValue { get; set; }
         
