@@ -6,7 +6,7 @@ namespace Apps.Acclaro
     {
         public string Name
         {
-            get => "Acclaro";
+            get => "My Acclaro";
             set { }
         }
 

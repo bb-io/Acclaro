@@ -20,10 +20,10 @@ namespace Apps.Acclaro.Actions
         }
 
         [Action("Get order strings", Description = "Get a list of all string of order")]
-        public ListAllStringsResponse? ListAllStrings([ActionParameter] OrderRequest input)
+        public async Task<ListAllStringsResponse> ListAllStrings([ActionParameter] OrderRequest input)
         {
             var request = new AcclaroRequest($"/orders/{input.Id}/strings-info", Method.Get, Creds);
-            var result = Client.Get<ResponseWrapper<List<StringListDto>>>(request);
+            var result = await Client.GetAsync<ResponseWrapper<List<StringListDto>>>(request);
             return new ListAllStringsResponse()
             {
                 Strings = result.Data
@@ -31,7 +31,7 @@ namespace Apps.Acclaro.Actions
         }
 
         [Action("Add strings to order", Description = "Add strings to an existing order. Note: order process type should be string.")]
-        public async void AddString([ActionParameter] OrderRequest input, [ActionParameter] AddStringRequest stringData, [ActionParameter] LanguageRequest languages)
+        public async Task AddString([ActionParameter] OrderRequest input, [ActionParameter] AddStringRequest stringData, [ActionParameter] LanguageRequest languages)
         {
             var request = new AcclaroRequest($"/orders/{input.Id}/strings", Method.Post, Creds);
             request.AddJsonBody(
