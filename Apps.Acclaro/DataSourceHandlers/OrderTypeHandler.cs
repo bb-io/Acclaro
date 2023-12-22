@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Apps.Acclaro.DataSourceHandlers
 {
-    public class OrderTypeHandler : AcclaroInvocable
+    public class OrderTypeHandler : AcclaroInvocable, IAsyncDataSourceHandler
     {
         public OrderTypeHandler(InvocationContext invocationContext) : base(invocationContext)
         {
