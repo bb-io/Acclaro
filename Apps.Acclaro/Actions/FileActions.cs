@@ -1,70 +1,97 @@
 ﻿using Apps.Acclaro.Dtos;
+using Apps.Acclaro.Models.Requests;
 using Apps.Acclaro.Models.Requests.Files;
+using Apps.Acclaro.Models.Requests.Orders;
 using Apps.Acclaro.Models.Responses;
 using Apps.Acclaro.Models.Responses.Files;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 using File = Blackbird.Applications.Sdk.Common.Files.File;
 
 namespace Apps.Acclaro.Actions
 {
     [ActionList]
-    public class FileActions
+    public class FileActions : AcclaroInvocable
     {
-        [Action("List all order files", Description = "List all order files")]
-        public ListFilesResponse ListOrderFiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        [ActionParameter] string orderId)
+        public FileActions(InvocationContext invocationContext) : base(invocationContext)
         {
-            var client = new AcclaroClient();
-            var request = new AcclaroRequest($"/orders/{orderId}/files-info", Method.Get, authenticationCredentialsProviders);
-            return new ListFilesResponse()
+        }
+
+        [Action("Upload file", Description = "Upload a file to an order")]
+        public async Task<FileInfoDto> UploadFile([ActionParameter] OrderRequest input, [ActionParameter] UploadFileRequest file, [ActionParameter] LanguageRequest languages)
+        {
+            var path = "files";
+            if (file.IsReference.HasValue && file.IsReference.Value)
+                path = "file-reference";
+
+            var request = new AcclaroRequest($"/orders/{input.Id}/{path}", Method.Post, Creds);
+            if (languages.SourceLanguage != null)
+                request.AddParameter("sourcelang", languages.SourceLanguage);
+
+            if (languages.TargetLanguages != null)
+                request.AddParameter("targetlang", string.Join(',', languages.TargetLanguages));
+
+            if (file.ClientRef != null)
+                request.AddParameter("clientref", file.ClientRef);
+
+            request.AddFile("file", file.File.Bytes, file.File.Name);
+            var response = await Client.PostAsync<ResponseWrapper<FileInfoDto>>(request);
+
+            var id = response.Data.Fileid;
+
+            if (file.CallbackUrl != null)
             {
-                Files = client.Get<ResponseWrapper<List<FileInfoStatusDto>>>(request).Data
-            };
+                var callbackRequest = new AcclaroRequest($"/orders/{input.Id}/files/{id}/callback", Method.Post, Creds);
+                callbackRequest.AddParameter("url", file.CallbackUrl);
+                await Client.PostAsync(callbackRequest);
+            }
+
+            if (file.CallbackEmail != null)
+            {
+                var emailRequest = new AcclaroRequest($"/orders/{input.Id}/files/{id}/email", Method.Post, Creds);
+                emailRequest.AddParameter("email", file.CallbackEmail);
+                await Client.PostAsync(emailRequest);
+            }
+
+            if (file.ReviewUrl != null)
+            {
+                var reviewRequest = new AcclaroRequest($"/orders/{input.Id}/files/{id}/review-url", Method.Post, Creds);
+                reviewRequest.AddParameter("url", file.ReviewUrl);
+                await Client.PostAsync(reviewRequest);
+            }
+
+            return response.Data;
         }
 
-        [Action("Get file information", Description = "Get file information by ID")]
-        public FileInfoStatusDto? GetFileInfo(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] string orderId, [ActionParameter] string fileId)
-        {
-            var client = new AcclaroClient();
-            var request = new AcclaroRequest($"/orders/{orderId}/files/{fileId}/status", Method.Get, authenticationCredentialsProviders);
-            return client.Get<ResponseWrapper<FileInfoStatusDto>>(request).Data;
-        }
+        //[Action("List all order files", Description = "List all order files")]
+        //public ListFilesResponse ListOrderFiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        //[ActionParameter] string orderId)
+        //{
+        //    var client = new AcclaroClient();
+        //    var request = new AcclaroRequest($"/orders/{orderId}/files-info", Method.Get, authenticationCredentialsProviders);
+        //    return new ListFilesResponse()
+        //    {
+        //        Files = client.Get<ResponseWrapper<List<FileInfoStatusDto>>>(request).Data
+        //    };
+        //}
 
-        [Action("Upload file", Description = "Upload file")]
-        public FileInfoDto? UploadFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] UploadFileRequest input)
+        [Action("Get file information", Description = "Get actual information on a file")]
+        public async Task<FileInfoStatusDto> GetFileInfo([ActionParameter] OrderRequest input, [ActionParameter] FileRequest file)
         {
-            var client = new AcclaroClient();
-            var request = new AcclaroRequest($"/orders/{input.OrderId}/files", Method.Post, authenticationCredentialsProviders);
-            request.AddParameter("orderid", input.OrderId);
-            request.AddParameter("sourcelang", input.Sourcelang);
-            request.AddParameter("targetlang", input.Targetlang);
-            request.AddFile("file", input.File.Bytes, input.File.Name);
-            return client.Execute<ResponseWrapper<FileInfoDto>>(request).Data.Data;
-        }
+            var request = new AcclaroRequest($"/orders/{input.Id}/files/{file.FileId}/status", Method.Get, Creds);
+            var response = await Client.GetAsync<ResponseWrapper<FileInfoStatusDto>>(request);
 
-        [Action("Upload reference file", Description = "Upload reference file (glossaries, style guides etc)")]
-        public FileInfoDto? UploadReferenceFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] UploadReferenceFileRequest input)
-        {
-            var client = new AcclaroClient();
-            var request = new AcclaroRequest($"/orders/{input.OrderId}/reference-file", Method.Post, authenticationCredentialsProviders);
-            request.AddParameter("orderid", input.OrderId);
-            request.AddFile("file", input.File.Bytes, input.File.Name);
-            return client.Execute<ResponseWrapper<FileInfoDto>>(request).Data.Data;
-        }
+            return response.Data;
+        }        
 
         [Action("Download file", Description = "Download order file by ID")]
-        public FileDataResponse? DownloadFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] string orderId, [ActionParameter] string fileId)
+        public FileDataResponse? DownloadFile([ActionParameter] OrderRequest input, [ActionParameter] FileRequest file)
         {
-            var client = new AcclaroClient();
-            var request = new AcclaroRequest($"/orders/{orderId}/files/{fileId}", Method.Get, authenticationCredentialsProviders);
-            var response = client.Get(request);
+            var request = new AcclaroRequest($"//orders/{input.Id}/files/{file.FileId}", Method.Get, Creds);
+            var response = Client.Get(request);
             var filenameHeader = response.ContentHeaders.First(h => h.Name == "Content-Disposition");
             var filename = filenameHeader.Value.ToString().Split('"')[1];
             var contentType = response.ContentType;
@@ -79,33 +106,13 @@ namespace Apps.Acclaro.Actions
             };
         }
 
-        [Action("Delete file", Description = "Delete file")]
-        public void DeleteFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] string orderId, [ActionParameter] string fileId)
-        {
-            var client = new AcclaroClient();
-            var request = new AcclaroRequest($"/orders/{orderId}/files/{fileId}", Method.Delete, authenticationCredentialsProviders);
-            client.Execute(request);
-        }
-
-        [Action("Add callback to file", Description = "Add callback to file")]
-        public void AddCallbackToFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] AddCallbackToFileRequest input)
-        {
-            var client = new AcclaroClient();
-            var request = new AcclaroRequest($"/orders/{input.OrderId}/files/{input.FileId}/callback", Method.Post, authenticationCredentialsProviders);
-            request.AddParameter("url", input.CallbackUrl);
-            client.Execute(request);
-        }
-
-        [Action("Delete callback to file", Description = "Delete callback to file")]
-        public void DeleteCallbackToFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-            [ActionParameter] AddCallbackToFileRequest input)
-        {
-            var client = new AcclaroClient();
-            var request = new AcclaroRequest($"/orders/{input.OrderId}/files/{input.FileId}/callback", Method.Delete, authenticationCredentialsProviders);
-            request.AddParameter("url", input.CallbackUrl);
-            client.Execute(request);
-        }
+        //[Action("Delete file", Description = "Delete file")]
+        //public void DeleteFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
+        //    [ActionParameter] string orderId, [ActionParameter] string fileId)
+        //{
+        //    var client = new AcclaroClient();
+        //    var request = new AcclaroRequest($"/orders/{orderId}/files/{fileId}", Method.Delete, authenticationCredentialsProviders);
+        //    client.Execute(request);
+        //}
     }
 }

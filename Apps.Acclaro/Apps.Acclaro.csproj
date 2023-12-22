@@ -3,15 +3,14 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Product>MyAcclaro (Sandbox)</Product>
+    <Product>My Acclaro</Product>
     <Description>Streamlines translation workflows for your enterprise from order creation through review.</Description>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <AssemblyName>Apps.Acclaro</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.2.0-alpha4" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="RestSharp" Version="110.2.0" />
+    <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.3.1" />
+    <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.13" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.png" />

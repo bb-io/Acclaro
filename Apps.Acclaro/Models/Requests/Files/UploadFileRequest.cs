@@ -5,15 +5,21 @@ namespace Apps.Acclaro.Models.Requests.Files
 {
     public class UploadFileRequest
     {
-        [Display("Order ID")]
-        public string OrderId { get; set; }
-        
-        [Display("Source language")]
-        public string Sourcelang { get; set; }
-        
-        [Display("Target language")]
-        public string Targetlang { get; set; }
-        
         public File File { get; set; }
+
+        [Display("Client reference", Description = "If supplied when the order is loaded, it will be returned in all future calls about this order.")]
+        public string? ClientRef { get; set; }
+
+        [Display("Review URL")]
+        public string? ReviewUrl { get; set; }
+
+        [Display("Callback URL")]
+        public string? CallbackUrl { get; set; }
+
+        [Display("Callback email")]
+        public string? CallbackEmail { get; set; }
+
+        [Display("Is reference file")]
+        public bool? IsReference { get; set; }
     }
 }
