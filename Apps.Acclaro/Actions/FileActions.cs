@@ -21,7 +21,7 @@ namespace Apps.Acclaro.Actions
         }
 
         [Action("Upload file", Description = "Upload a file to an order")]
-        public async Task<FileInfoResponse> UploadFile([ActionParameter] OrderRequest input, [ActionParameter] UploadFileRequest file, [ActionParameter] LanguageRequest languages)
+        public async Task<FileInfoResponse> UploadFile([ActionParameter] OrderRequest input, [ActionParameter] UploadFileRequest file, [ActionParameter] RequiredLanguageRequest languages)
         {
             var path = "files";
             if (file.IsReference.HasValue && file.IsReference.Value)
