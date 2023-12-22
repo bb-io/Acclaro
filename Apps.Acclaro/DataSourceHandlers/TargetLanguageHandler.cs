@@ -34,7 +34,7 @@ namespace Apps.Acclaro.DataSourceHandlers
                 .Where(x => context.SearchString == null ||
                             x.Target.Description.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
                 .Select(x => x.Target)
-                .Distinct()
+                .DistinctBy(x => x.Code)
                 .ToDictionary(x => x.Code, x => x.Description);
         }
     }
