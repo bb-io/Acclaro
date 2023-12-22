@@ -3,9 +3,9 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Product>MyAcclaro (Sandbox)</Product>
+    <Product>My Acclaro</Product>
     <Description>Streamlines translation workflows for your enterprise from order creation through review.</Description>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <AssemblyName>Apps.Acclaro</AssemblyName>
   </PropertyGroup>
   <ItemGroup>

@@ -1,10 +1,10 @@
-﻿using System.Runtime.InteropServices;
+﻿using Blackbird.Applications.Sdk.Common;
 
 namespace Apps.Acclaro.Callbacks.Payload
 {
     public class StringUpdatePayload
     {
-        [DispId("String ID")]
+        [Display("String ID")]
         public string Id { get; set; }
     }
 }
