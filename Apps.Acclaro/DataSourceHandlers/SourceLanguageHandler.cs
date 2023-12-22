@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Apps.Acclaro.DataSourceHandlers
 {
-    public class SourceLanguageHandler : AcclaroInvocable
+    public class SourceLanguageHandler : AcclaroInvocable, IAsyncDataSourceHandler
     {
         public SourceLanguageHandler(InvocationContext invocationContext) : base(invocationContext)
         {

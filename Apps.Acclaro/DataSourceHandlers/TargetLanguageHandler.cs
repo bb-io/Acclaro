@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Apps.Acclaro.DataSourceHandlers
 {
-    public class TargetLanguageHandler : AcclaroInvocable
+    public class TargetLanguageHandler : AcclaroInvocable, IAsyncDataSourceHandler
     {
         private LanguageRequest langRequest;
         public TargetLanguageHandler(InvocationContext invocationContext, [ActionParameter] LanguageRequest req) : base(invocationContext)
