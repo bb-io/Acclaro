@@ -23,15 +23,15 @@ namespace Apps.Acclaro.Actions
         public async Task<ListAllStringsResponse> ListAllStrings([ActionParameter] OrderRequest input)
         {
             var request = new AcclaroRequest($"/orders/{input.Id}/strings-info", Method.Get, Creds);
-            var result = await Client.GetAsync<ResponseWrapper<List<StringListDto>>>(request);
+            var result = await Client.ExecuteAcclaro<List<StringDto>>(request);
             return new ListAllStringsResponse()
             {
-                Strings = result.Data
+                Strings = result
             };
         }
 
         [Action("Add strings to order", Description = "Add strings to an existing order. Note: order process type should be string.")]
-        public async Task AddString([ActionParameter] OrderRequest input, [ActionParameter] AddStringRequest stringData, [ActionParameter] LanguageRequest languages)
+        public Task AddString([ActionParameter] OrderRequest input, [ActionParameter] AddStringRequest stringData, [ActionParameter] LanguageRequest languages)
         {
             var request = new AcclaroRequest($"/orders/{input.Id}/strings", Method.Post, Creds);
             request.AddJsonBody(
@@ -49,7 +49,7 @@ namespace Apps.Acclaro.Actions
                         }
                     }
                 });
-            await Client.ExecuteAsync(request);
+            return Client.ExecuteAcclaro(request);
         }
 
         //[Action("Get string", Description = "Get string by ID")]

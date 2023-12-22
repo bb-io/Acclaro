@@ -1,4 +1,7 @@
-﻿using RestSharp;
+﻿using Apps.Acclaro.Dtos;
+using Apps.Acclaro.Models.Responses;
+using Newtonsoft.Json;
+using RestSharp;
 
 namespace Apps.Acclaro
 {
@@ -9,5 +12,25 @@ namespace Apps.Acclaro
             ThrowOnAnyError = true, 
             BaseUrl = new Uri("https://apisandbox.acclaro.com/api/v2")
         }) { }
+
+        public async Task ExecuteAcclaro(AcclaroRequest request)
+        {
+            var response = await ExecuteAsync(request);
+            var result = JsonConvert.DeserializeObject<ResponseWrapper<object>>(response.Content);
+
+            if (!result.Success)
+                throw new Exception(result.ErrorMessage);
+        }
+
+        public async Task<T> ExecuteAcclaro<T>(AcclaroRequest request)
+        {
+            var response = await ExecuteAsync(request);  
+            var result = JsonConvert.DeserializeObject<ResponseWrapper<T>>(response.Content);
+
+            if (!result.Success)
+                throw new Exception(result.ErrorMessage);
+
+            return result.Data!;
+        }
     }
 }

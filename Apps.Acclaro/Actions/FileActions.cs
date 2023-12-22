@@ -21,7 +21,7 @@ namespace Apps.Acclaro.Actions
         }
 
         [Action("Upload file", Description = "Upload a file to an order")]
-        public async Task<FileInfoDto> UploadFile([ActionParameter] OrderRequest input, [ActionParameter] UploadFileRequest file, [ActionParameter] LanguageRequest languages)
+        public async Task<FileInfoResponse> UploadFile([ActionParameter] OrderRequest input, [ActionParameter] UploadFileRequest file, [ActionParameter] LanguageRequest languages)
         {
             var path = "files";
             if (file.IsReference.HasValue && file.IsReference.Value)
@@ -38,32 +38,32 @@ namespace Apps.Acclaro.Actions
                 request.AddParameter("clientref", file.ClientRef);
 
             request.AddFile("file", file.File.Bytes, file.File.Name);
-            var response = await Client.PostAsync<ResponseWrapper<FileInfoDto>>(request);
+            var response = await Client.ExecuteAcclaro<FileInfoDto>(request);
 
-            var id = response.Data.Fileid;
+            var id = response.Fileid;
 
             if (file.CallbackUrl != null)
             {
                 var callbackRequest = new AcclaroRequest($"/orders/{input.Id}/files/{id}/callback", Method.Post, Creds);
                 callbackRequest.AddParameter("url", file.CallbackUrl);
-                await Client.PostAsync(callbackRequest);
+                await Client.ExecuteAcclaro(callbackRequest);
             }
 
             if (file.CallbackEmail != null)
             {
                 var emailRequest = new AcclaroRequest($"/orders/{input.Id}/files/{id}/email", Method.Post, Creds);
                 emailRequest.AddParameter("email", file.CallbackEmail);
-                await Client.PostAsync(emailRequest);
+                await Client.ExecuteAcclaro(emailRequest);
             }
 
             if (file.ReviewUrl != null)
             {
                 var reviewRequest = new AcclaroRequest($"/orders/{input.Id}/files/{id}/review-url", Method.Post, Creds);
                 reviewRequest.AddParameter("url", file.ReviewUrl);
-                await Client.PostAsync(reviewRequest);
+                await Client.ExecuteAcclaro(reviewRequest);
             }
 
-            return response.Data;
+            return new(response);
         }
 
         //[Action("List all order files", Description = "List all order files")]
@@ -78,19 +78,18 @@ namespace Apps.Acclaro.Actions
         //    };
         //}
 
-        [Action("Get file information", Description = "Get actual information on a file")]
-        public async Task<FileInfoStatusDto> GetFileInfo([ActionParameter] OrderRequest input, [ActionParameter] FileRequest file)
+        [Action("Get file information", Description = "Get information of a file")]
+        public async Task<FileInfoResponse> GetFileInfo([ActionParameter] OrderRequest input, [ActionParameter] FileRequest file)
         {
             var request = new AcclaroRequest($"/orders/{input.Id}/files/{file.FileId}/status", Method.Get, Creds);
-            var response = await Client.GetAsync<ResponseWrapper<FileInfoStatusDto>>(request);
-
-            return response.Data;
+            var response = await Client.ExecuteAcclaro<FileInfoDto>(request);
+            return new(response);
         }        
 
         [Action("Download file", Description = "Download order file by ID")]
         public FileDataResponse? DownloadFile([ActionParameter] OrderRequest input, [ActionParameter] FileRequest file)
         {
-            var request = new AcclaroRequest($"//orders/{input.Id}/files/{file.FileId}", Method.Get, Creds);
+            var request = new AcclaroRequest($"/orders/{input.Id}/files/{file.FileId}", Method.Get, Creds);
             var response = Client.Get(request);
             var filenameHeader = response.ContentHeaders.First(h => h.Name == "Content-Disposition");
             var filename = filenameHeader.Value.ToString().Split('"')[1];

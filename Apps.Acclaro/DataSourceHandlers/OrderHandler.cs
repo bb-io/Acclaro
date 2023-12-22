@@ -21,12 +21,12 @@ namespace Apps.Acclaro.DataSourceHandlers
         CancellationToken cancellationToken)
         {
             var request = new AcclaroRequest("/orders", Method.Get, Creds);
-            var result = await Client.GetAsync<ResponseWrapper<List<OrderDto>>>(request);
+            var result = await Client.ExecuteAcclaro<List<OrderDto>>(request);
 
-            return result.Data
+            return result
                 .Where(x => context.SearchString == null ||
                             x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
-                .ToDictionary(x => x.Orderid, x => x.Name);
+                .ToDictionary(x => x.Orderid.ToString(), x => x.Name);
         }
     }
 }

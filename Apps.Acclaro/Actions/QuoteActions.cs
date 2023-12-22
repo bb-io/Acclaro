@@ -17,10 +17,10 @@ namespace Apps.Acclaro.Actions
         }
 
         [Action("Request quote", Description = "Request a quote for an order")]
-        public void GetQuote([ActionParameter] OrderRequest input)
+        public Task GetQuote([ActionParameter] OrderRequest input)
         {
             var request = new AcclaroRequest($"/orders/{input.Id}/quote", Method.Get, Creds);
-            Client.Execute(request);
+            return Client.ExecuteAcclaro(request);
         }
 
         //[Action("Get quote details", Description = "Get quote details by order ID")]
@@ -33,17 +33,17 @@ namespace Apps.Acclaro.Actions
         //}
 
         [Action("Approve quote", Description = "Approve an order for which a quote was requested")]
-        public void ApproveQuote([ActionParameter] OrderRequest input)
+        public Task ApproveQuote([ActionParameter] OrderRequest input)
         {
             var request = new AcclaroRequest($"/orders/{input.Id}/quote-approve", Method.Post, Creds);
-            Client.Execute(request);
+            return Client.ExecuteAcclaro(request);
         }
 
         [Action("Decline quote", Description = "Decline an order for which a quote was requested")]
-        public void DeclineQuote([ActionParameter] OrderRequest input)
+        public Task DeclineQuote([ActionParameter] OrderRequest input)
         {
             var request = new AcclaroRequest($"/orders/{input.Id}/quote-decline", Method.Post, Creds);
-            Client.Execute(request);
+            return Client.ExecuteAcclaro(request);
         }
     }
 }

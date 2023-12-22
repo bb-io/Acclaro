@@ -4,6 +4,6 @@ namespace Apps.Acclaro.Models.Responses.Strings
 {
     public class ListAllStringsResponse
     {
-        public IEnumerable<StringListDto> Strings { get; set; }
+        public IEnumerable<StringDto> Strings { get; set; }
     }
 }

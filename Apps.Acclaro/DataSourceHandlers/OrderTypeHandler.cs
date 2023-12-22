@@ -21,9 +21,9 @@ namespace Apps.Acclaro.DataSourceHandlers
         CancellationToken cancellationToken)
         {
             var request = new AcclaroRequest("/info/order-types", Method.Get, Creds);
-            var result = Client.Get<ResponseWrapper<List<OrderTypeDto>>>(request);
+            var result = await Client.ExecuteAcclaro<List<OrderTypeDto>>(request);
 
-            return result.Data
+            return result
                 .Where(x => context.SearchString == null ||
                             x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
                 .ToDictionary(x => x.Name, x => x.Name);
