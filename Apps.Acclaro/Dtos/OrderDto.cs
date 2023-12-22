@@ -5,75 +5,57 @@ namespace Apps.Acclaro.Dtos
 {
     public class OrderDto
     {
-        [Display("Order ID")]
         [JsonProperty("orderid")]
-        public string Orderid { get; set; }
+        public int Orderid { get; set; }
 
-        [Display("User")]
         [JsonProperty("user")]
         public User User { get; set; }
 
-        [Display("User group")]
         [JsonProperty("usergroup")]
-        public string Usergroup { get; set; }
+        public int Usergroup { get; set; }
 
-        [Display("Plunet order ID")]
         [JsonProperty("plunet-orderid")]
         public string PlunetOrderid { get; set; }
 
-        [Display("Plunet request ID")]
         [JsonProperty("plunet-requestid")]
         public string PlunetRequestid { get; set; }
 
-        [Display("Plunet quote ID")]
         [JsonProperty("plunet-quoteid")]
         public object PlunetQuoteid { get; set; }
 
-        [Display("Plunet quote number")]
-        [JsonProperty("plunet-quotenum")]
-        public object PlunetQuotenum { get; set; }
+        //[JsonProperty("plunet-quotenum")]
+        //public object PlunetQuotenum { get; set; }
 
-        [Display("Name")]
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        [Display("Status")]
         [JsonProperty("status")]
         public string Status { get; set; }
 
-        [Display("Process type")]
         [JsonProperty("process_type")]
         public string ProcessType { get; set; }
 
-        [Display("Order type")]
         [JsonProperty("ordertype")]
         public string Ordertype { get; set; }
 
-        [Display("Source file count")]
         [JsonProperty("sourcefilecount")]
         public int Sourcefilecount { get; set; }
 
-        [Display("Reference file count")]
         [JsonProperty("referencefilecount")]
         public int Referencefilecount { get; set; }
 
-        [Display("Target file count")]
         [JsonProperty("targetfilecount")]
         public int Targetfilecount { get; set; }
 
-        [Display("Requested due date")]
         [JsonProperty("requested_due_date")]
         public DateTime RequestedDueDate { get; set; }
 
-        [Display("Due date")]
         [JsonProperty("duedate")]
         public DateTime Duedate { get; set; }
 
-        [Display("Client reference")]
         [JsonProperty("clientref")]
         public string Clientref { get; set; }
 
-        [Display("Delivery")]
         [JsonProperty("delivery")]
         public string Delivery { get; set; }
 
@@ -83,26 +65,21 @@ namespace Apps.Acclaro.Dtos
         //[JsonProperty("review")]
         //public object Review { get; set; }
 
-        [Display("Created")]
         [JsonProperty("created")]
         public DateTime Created { get; set; }
-
-        [Display("Modified")]
+            
         [JsonProperty("modified")]
         public DateTime Modified { get; set; }
 
-        [Display("Source languages")]
         [JsonProperty("sourcelang")]
         public List<string> Sourcelang { get; set; }
 
-        [Display("Target languages")]
         [JsonProperty("targetlang")]
         public List<string> Targetlang { get; set; }
 
         //[JsonProperty("ordertypecode")]
         //public int Ordertypecode { get; set; }
 
-        [Display("Email address")]
         [JsonProperty("emailaddress")]
         public string Emailaddress { get; set; }
 
@@ -130,11 +107,9 @@ namespace Apps.Acclaro.Dtos
         //[JsonProperty("autoapproveamt")]
         //public int Autoapproveamt { get; set; }
 
-        [Display("Tags")]
         [JsonProperty("tags")]
-        public string Tags { get; set; }
+        public List<string> Tags { get; set; }
 
-        [Display("Estimated word count")]
         [JsonProperty("estimatedwordcount")]
         public int Estimatedwordcount { get; set; }
 
@@ -168,7 +143,6 @@ namespace Apps.Acclaro.Dtos
         //[JsonProperty("needs_approval")]
         //public string NeedsApproval { get; set; }
 
-        [Display("Comments")]
         [JsonProperty("comments")]
         public string Comments { get; set; }
 
@@ -178,7 +152,6 @@ namespace Apps.Acclaro.Dtos
         //[JsonProperty("invoice_data")]
         //public object InvoiceData { get; set; }
 
-        [Display("Account")]
         [JsonProperty("account")]
         public Account Account { get; set; }
 
@@ -237,7 +210,7 @@ namespace Apps.Acclaro.Dtos
         [JsonProperty("firstname")]
         public string Firstname { get; set; }
 
-        [Display("Lastname")]
+        [Display("Last name")]
         [JsonProperty("lastname")]
         public string Lastname { get; set; }
 

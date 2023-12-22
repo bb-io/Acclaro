@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Blackbird.Applications.Sdk.Common;
+using Newtonsoft.Json;
 
 namespace Apps.Acclaro.Dtos
 {
@@ -23,7 +24,7 @@ namespace Apps.Acclaro.Dtos
         public string Filename { get; set; }
 
         [Display("Plunet filename")]
-        [JsonPropertyName("plunet-filename")] 
+        [JsonProperty("plunet-filename")] 
         public string PlunetFilename { get; set; }
         
         public string Encoding { get; set; }
@@ -38,23 +39,9 @@ namespace Apps.Acclaro.Dtos
         public DateTime Uploaded { get; set; }
         
         [Display("Source language")]
-        public Sourcelang Sourcelang { get; set; }
+        public LanguageDto Sourcelang { get; set; }
         
         [Display("Target languages")]
-        public List<Targetlang> Targetlang { get; set; }
-    }
-
-    public class Sourcelang
-    {
-        public string Code { get; set; }
-        public string Code3 { get; set; }
-        public string Description { get; set; }
-    }
-
-    public class Targetlang
-    {
-        public string Code { get; set; }
-        public string Code3 { get; set; }
-        public string Description { get; set; }
+        public List<LanguageDto> Targetlang { get; set; }
     }
 }
