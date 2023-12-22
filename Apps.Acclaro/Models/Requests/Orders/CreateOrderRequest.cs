@@ -1,4 +1,5 @@
-﻿using Apps.Acclaro.DataSourceHandlers.EnumHandlers;
+﻿using Apps.Acclaro.DataSourceHandlers;
+using Apps.Acclaro.DataSourceHandlers.EnumHandlers;
 using Apps.Acclaro.Dtos;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
@@ -27,7 +28,7 @@ namespace Apps.Acclaro.Models.Requests.Orders
         public string? ClientRef { get; set; }
 
         [Display("Order type")]
-        [DataSource(typeof(OrderTypeDto))]
+        [DataSource(typeof(OrderTypeHandler))]
         public string? Type { get; set; }
 
         [Display("Process type")]
