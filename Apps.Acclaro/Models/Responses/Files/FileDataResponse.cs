@@ -1,9 +1,9 @@
-﻿using File = Blackbird.Applications.Sdk.Common.Files.File;
+﻿using Blackbird.Applications.Sdk.Common.Files;
 
 namespace Apps.Acclaro.Models.Responses.Files
 {
     public class FileDataResponse
     {
-        public File File { get; set; }
+        public FileReference File { get; set; }
     }
 }
