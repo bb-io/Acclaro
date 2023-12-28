@@ -2,26 +2,30 @@
 using Apps.Acclaro.Models.Requests;
 using Apps.Acclaro.Models.Requests.Files;
 using Apps.Acclaro.Models.Requests.Orders;
-using Apps.Acclaro.Models.Responses;
 using Apps.Acclaro.Models.Responses.Files;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
+using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using RestSharp;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
 
 namespace Apps.Acclaro.Actions
 {
     [ActionList]
     public class FileActions : AcclaroInvocable
     {
-        public FileActions(InvocationContext invocationContext) : base(invocationContext)
+        private readonly IFileManagementClient _fileManagementClient;
+        
+        public FileActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient) 
+            : base(invocationContext)
         {
+            _fileManagementClient = fileManagementClient;
         }
 
         [Action("Upload file", Description = "Upload a file to an order")]
-        public async Task<FileInfoResponse> UploadFile([ActionParameter] OrderRequest input, [ActionParameter] UploadFileRequest file, [ActionParameter] RequiredLanguageRequest languages)
+        public async Task<FileInfoResponse> UploadFile([ActionParameter] OrderRequest input,
+            [ActionParameter] UploadFileRequest file, [ActionParameter] RequiredLanguageRequest languages)
         {
             var path = "files";
             if (file.IsReference.HasValue && file.IsReference.Value)
@@ -37,7 +41,9 @@ namespace Apps.Acclaro.Actions
             if (file.ClientRef != null)
                 request.AddParameter("clientref", file.ClientRef);
 
-            request.AddFile("file", file.File.Bytes, file.File.Name);
+            var fileStream = await _fileManagementClient.DownloadAsync(file.File);
+            var fileBytes = await fileStream.GetByteData();
+            request.AddFile("file", fileBytes, file.File.Name);
             var response = await Client.ExecuteAcclaro<FileInfoDto>(request);
 
             var id = response.Fileid;
@@ -79,30 +85,27 @@ namespace Apps.Acclaro.Actions
         //}
 
         [Action("Get file information", Description = "Get information of a file")]
-        public async Task<FileInfoResponse> GetFileInfo([ActionParameter] OrderRequest input, [ActionParameter] FileRequest file)
+        public async Task<FileInfoResponse> GetFileInfo([ActionParameter] OrderRequest input,
+            [ActionParameter] FileRequest file)
         {
             var request = new AcclaroRequest($"/orders/{input.Id}/files/{file.FileId}/status", Method.Get, Creds);
             var response = await Client.ExecuteAcclaro<FileInfoDto>(request);
             return new(response);
-        }        
+        }
 
         [Action("Download file", Description = "Download order file by ID")]
-        public FileDataResponse? DownloadFile([ActionParameter] OrderRequest input, [ActionParameter] FileRequest file)
+        public async Task<FileDataResponse> DownloadFile([ActionParameter] OrderRequest input, 
+            [ActionParameter] FileRequest file)
         {
             var request = new AcclaroRequest($"/orders/{input.Id}/files/{file.FileId}", Method.Get, Creds);
             var response = Client.Get(request);
-            var filenameHeader = response.ContentHeaders.First(h => h.Name == "Content-Disposition");
-            var filename = filenameHeader.Value.ToString().Split('"')[1];
+            var filename = response.ContentHeaders.First(h => h.Name == "Content-Disposition").Value.ToString()
+                .Split('"')[1];
             var contentType = response.ContentType;
-            
-            return new FileDataResponse()
-            {
-                File = new File(response.RawBytes)
-                {
-                    Name = filename,
-                    ContentType = contentType
-                }
-            };
+
+            using var stream = new MemoryStream(response.RawBytes);
+            var fileReference = await _fileManagementClient.UploadAsync(stream, contentType, filename);
+            return new FileDataResponse { File = fileReference };
         }
 
         //[Action("Delete file", Description = "Delete file")]

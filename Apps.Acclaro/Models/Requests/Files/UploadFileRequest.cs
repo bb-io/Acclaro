@@ -1,11 +1,11 @@
 ﻿using Blackbird.Applications.Sdk.Common;
-using File = Blackbird.Applications.Sdk.Common.Files.File;
+using Blackbird.Applications.Sdk.Common.Files;
 
 namespace Apps.Acclaro.Models.Requests.Files
 {
     public class UploadFileRequest
     {
-        public File File { get; set; }
+        public FileReference File { get; set; }
 
         [Display("Client reference", Description = "If supplied when the order is loaded, it will be returned in all future calls about this order.")]
         public string? ClientRef { get; set; }
