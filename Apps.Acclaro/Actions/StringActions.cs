@@ -2,11 +2,9 @@
 using Apps.Acclaro.Models.Requests;
 using Apps.Acclaro.Models.Requests.Orders;
 using Apps.Acclaro.Models.Requests.Strings;
-using Apps.Acclaro.Models.Responses;
 using Apps.Acclaro.Models.Responses.Strings;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 

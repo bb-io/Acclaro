@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Blackbird.Applications.Sdk.Common;
+﻿using Blackbird.Applications.Sdk.Common;
 using Newtonsoft.Json;
 
 namespace Apps.Acclaro.Dtos

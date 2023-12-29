@@ -1,13 +1,8 @@
 ﻿using Apps.Acclaro.Dtos;
-using Apps.Acclaro.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Apps.Acclaro.DataSourceHandlers
 {
@@ -21,9 +16,10 @@ namespace Apps.Acclaro.DataSourceHandlers
         CancellationToken cancellationToken)
         {
             var request = new AcclaroRequest("/orders", Method.Get, Creds);
-            var result = await Client.ExecuteAcclaro<List<OrderDto>>(request);
+            var result = await Client.ExecuteAcclaro<List<JContainer>>(request);
 
-            return result
+            var orders = result.Where(x => x is JObject).Select(x => x.ToObject<OrderDto>()).ToList();
+            return orders
                 .Where(x => context.SearchString == null ||
                             x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
                 .ToDictionary(x => x.Orderid.ToString(), x => x.Name);

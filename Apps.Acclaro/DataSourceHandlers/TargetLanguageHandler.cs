@@ -1,16 +1,9 @@
 ﻿using Apps.Acclaro.Dtos;
 using Apps.Acclaro.Models.Requests;
-using Apps.Acclaro.Models.Responses;
 using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Apps.Acclaro.DataSourceHandlers
 {
