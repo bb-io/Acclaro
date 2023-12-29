@@ -1,6 +1,4 @@
-﻿
-using Apps.Acclaro.Actions;
-using Apps.Acclaro.Dtos;
+﻿using Apps.Acclaro.Dtos;
 using Apps.Acclaro.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;

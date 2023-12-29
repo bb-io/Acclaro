@@ -1,5 +1,4 @@
-﻿using Apps.Acclaro.Dtos;
-using Apps.Acclaro.Models.Responses;
+﻿using Apps.Acclaro.Models.Responses;
 using Newtonsoft.Json;
 using RestSharp;
 
