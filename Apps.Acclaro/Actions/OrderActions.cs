@@ -73,17 +73,17 @@ namespace Apps.Acclaro.Actions
             {
                 foreach(var target in languages.TargetLanguages)
                 {
-                    if (languages.SourceLanguage != null)
+                    if (languages.SourceLanguage == null)
                     {
                         var langRequest = new AcclaroRequest($"/orders/{id}/language", Method.Post, Creds);
-                        request.AddParameter("targetlang", target);
+                        langRequest.AddParameter("targetlang", target);
                         await Client.ExecuteAcclaro(langRequest);
                     }
                     else
                     {
                         var langRequest = new AcclaroRequest($"/orders/{id}/language-pair", Method.Post, Creds);
-                        request.AddParameter("sourcelang", languages.SourceLanguage);
-                        request.AddParameter("targetlang", target);
+                        langRequest.AddParameter("sourcelang", languages.SourceLanguage);
+                        langRequest.AddParameter("targetlang", target);
                         await Client.ExecuteAcclaro(langRequest);
                     }
                 }               
