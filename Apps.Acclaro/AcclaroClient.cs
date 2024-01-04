@@ -8,7 +8,7 @@ namespace Apps.Acclaro
     {
         public AcclaroClient() : base(new RestClientOptions
         {
-            ThrowOnAnyError = true, 
+            ThrowOnAnyError = false, 
             BaseUrl = new Uri("https://apisandbox.acclaro.com/api/v2")
         }) { }
 

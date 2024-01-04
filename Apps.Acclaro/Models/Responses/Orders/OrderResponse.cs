@@ -45,10 +45,10 @@ namespace Apps.Acclaro.Models.Responses.Orders
         public int Targetfilecount { get; set; }
 
         [Display("Requested due date")]
-        public DateTime RequestedDueDate { get; set; }
+        public DateTime? RequestedDueDate { get; set; }
 
         [Display("Due date")]
-        public DateTime Duedate { get; set; }
+        public DateTime? Duedate { get; set; }
 
         [Display("Client reference")]
         public string Clientref { get; set; }
@@ -57,10 +57,10 @@ namespace Apps.Acclaro.Models.Responses.Orders
         public string Delivery { get; set; }
 
         [Display("Created")]
-        public DateTime Created { get; set; }
+        public DateTime? Created { get; set; }
 
         [Display("Modified")]
-        public DateTime Modified { get; set; }
+        public DateTime? Modified { get; set; }
 
         [Display("Source language codes")]
         public List<string> Sourcelang { get; set; }
