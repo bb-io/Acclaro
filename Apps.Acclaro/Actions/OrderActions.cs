@@ -7,6 +7,7 @@ using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 using System.Globalization;
+using System.Xml.Linq;
 
 namespace Apps.Acclaro.Actions
 {
@@ -130,7 +131,39 @@ namespace Apps.Acclaro.Actions
             var request = new AcclaroRequest($"/orders/{input.Id}/submit", Method.Post, Creds);
             return Client.ExecuteAcclaro(request);
         }
-        
+
+        [Action("Add order comment", Description = "Add a new comment to an order")]
+        public Task AddComment([ActionParameter] OrderRequest input, [ActionParameter] NewCommentRequest newComment)
+        {
+            var request = new AcclaroRequest($"/orders/{input.Id}/comment", Method.Post, Creds);
+            request.AddParameter("comment", newComment.Comment);
+            return Client.ExecuteAcclaro(request);
+        }
+
+        [Action("Update order comment", Description = "Updates an exisitng order comment (note: changes comment ID)")]
+        public Task UpdateComment([ActionParameter] OrderRequest input, [ActionParameter] CommentRequest comment, [ActionParameter] NewCommentRequest newComment)
+        {
+            var request = new AcclaroRequest($"/orders/{input.Id}/comment/{comment.CommentId}", Method.Post, Creds);
+            request.AddParameter("comment", newComment.Comment);
+            return Client.ExecuteAcclaro(request);
+        }
+
+        [Action("Get order comments", Description = "Get a list of all comments attached to an order")]
+        public async Task<ListCommentsResponse> GetComments([ActionParameter] OrderRequest input, [ActionParameter] OptionalFormatInput format)
+        {
+            var request = new AcclaroRequest($"/orders/{input.Id}/comments", Method.Get, Creds);
+
+            if (format.Format != null)
+                request.AddQueryParameter("format", format.Format);
+
+            var result = await Client.ExecuteAcclaro<List<CommentDto>>(request);
+
+            return new ListCommentsResponse()
+            {
+                Comments = result.Select(x => new CommentResponse(x))
+            };
+        }
+
     }
 }
 
