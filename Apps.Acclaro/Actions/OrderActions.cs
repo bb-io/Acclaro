@@ -93,6 +93,31 @@ namespace Apps.Acclaro.Actions
             return new(result);
         }
 
+        [Action("Update order", Description = "UPdate order")]
+        public async Task<OrderResponse> UpdateOrder([ActionParameter] OrderRequest order, [ActionParameter] UpdateOrderRequest input)
+        {
+            var currentOrderRequest = new AcclaroRequest($"/orders/{order.Id}", Method.Get, Creds);
+            var currentOrder = await Client.ExecuteAcclaro<OrderDto>(currentOrderRequest);
+
+            var request = new AcclaroRequest($"/orders/{order.Id}", Method.Post, Creds);
+            request.AddParameter("name", input.Name ?? currentOrder.Name);
+
+            request.AddParameter("comment", input.Comment ?? currentOrder.Comments);
+
+            if (input.DueDate.HasValue || currentOrder.Duedate.HasValue)
+                request.AddParameter("duedate", input.DueDate.HasValue ? input.DueDate.Value.ToString("o", CultureInfo.InvariantCulture) : currentOrder.Duedate!.Value.ToString("o", CultureInfo.InvariantCulture));
+
+            request.AddParameter("delivery", input.Delivery ?? currentOrder.Delivery);
+
+            request.AddParameter("estwordcount", input.EstimatedWordCount.HasValue ? input.EstimatedWordCount.Value : currentOrder.Estimatedwordcount);
+
+            request.AddParameter("type", input.Type ?? currentOrder.Ordertype);
+
+            var result = await Client.ExecuteAcclaro<OrderDto>(request);            
+
+            return new(result);
+        }
+
         [Action("Search orders", Description = "Search through all orders")]
         public async Task<ListOrdersResponse> SearchOrders([ActionParameter] SearchOrderRequest input)
         {
@@ -115,8 +140,6 @@ namespace Apps.Acclaro.Actions
             var response = await Client.ExecuteAcclaro<OrderDto>(request);
             return new(response);
         }
-
-        // Todo: edit order
 
         [Action("Delete order", Description = "Delete order")]
         public Task DeleteOrder([ActionParameter] OrderRequest input)
