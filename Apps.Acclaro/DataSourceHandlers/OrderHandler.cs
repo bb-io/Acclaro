@@ -21,8 +21,8 @@ namespace Apps.Acclaro.DataSourceHandlers
             var orders = result.Where(x => x is JObject).Select(x => x.ToObject<OrderDto>()).ToList();
             return orders
                 .Where(x => context.SearchString == null ||
-                            x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
-                .ToDictionary(x => x.Orderid.ToString(), x => x.Name);
+                            x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase) || x.Orderid.ToString().Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
+                .ToDictionary(x => x.Orderid.ToString(), x => $"{x.Orderid}: {x.Name}");
         }
     }
 }
