@@ -94,7 +94,7 @@ namespace Apps.Acclaro.Actions
         }
 
         [Action("Update order", Description = "UPdate order")]
-        public async Task<OrderResponse> UpdateOrder([ActionParameter] OrderRequest order, [ActionParameter] UpdateOrderRequest input)
+        public async Task<OrderResponse> UpdateOrder([ActionParameter] OrderRequest order, [ActionParameter] UpdateOrderRequest input, [ActionParameter] LanguageRequest languages)
         {
             var currentOrderRequest = new AcclaroRequest($"/orders/{order.Id}", Method.Get, Creds);
             var currentOrder = await Client.ExecuteAcclaro<OrderDto>(currentOrderRequest);
@@ -113,7 +113,27 @@ namespace Apps.Acclaro.Actions
 
             request.AddParameter("type", input.Type ?? currentOrder.Ordertype);
 
-            var result = await Client.ExecuteAcclaro<OrderDto>(request);            
+            var result = await Client.ExecuteAcclaro<OrderDto>(request);
+
+            if (languages.TargetLanguages != null)
+            {
+                foreach (var target in languages.TargetLanguages)
+                {
+                    if (languages.SourceLanguage == null)
+                    {
+                        var langRequest = new AcclaroRequest($"/orders/{order.Id}/language", Method.Post, Creds);
+                        langRequest.AddParameter("targetlang", target);
+                        await Client.ExecuteAcclaro(langRequest);
+                    }
+                    else
+                    {
+                        var langRequest = new AcclaroRequest($"/orders/{order.Id}/language-pair", Method.Post, Creds);
+                        langRequest.AddParameter("sourcelang", languages.SourceLanguage);
+                        langRequest.AddParameter("targetlang", target);
+                        await Client.ExecuteAcclaro(langRequest);
+                    }
+                }
+            }
 
             return new(result);
         }
