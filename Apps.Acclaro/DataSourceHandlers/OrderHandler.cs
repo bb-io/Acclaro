@@ -20,7 +20,7 @@ namespace Apps.Acclaro.DataSourceHandlers
 
             return orders
                 .Where(x => context.SearchString == null ||
-                            x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase) || x.Orderid.ToString().Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
+                            (x.Name != null && x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase)) || x.Orderid.ToString().Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
                 .ToDictionary(x => x.Orderid.ToString(), x => $"{x.Orderid}: {x.Name}");
         }
     }
