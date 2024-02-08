@@ -16,7 +16,7 @@ namespace Apps.Acclaro.DataSourceHandlers
         CancellationToken cancellationToken)
         {
             var request = new AcclaroRequest("/orders", Method.Get, Creds);
-            var orders = await Client.ExecuteAcclaro<List<OrderDto>>(request);
+            var orders = await Client.ExecutePaginatedAcclaro<OrderDto>(request);
 
             return orders
                 .Where(x => context.SearchString == null ||
