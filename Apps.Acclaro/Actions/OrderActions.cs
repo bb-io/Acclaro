@@ -6,7 +6,9 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
+using System;
 using System.Globalization;
+using System.Web;
 using System.Xml.Linq;
 
 namespace Apps.Acclaro.Actions
@@ -51,8 +53,13 @@ namespace Apps.Acclaro.Actions
 
             if (input.CallbackUrl != null)
             {
+                var builder = new UriBuilder(input.CallbackUrl);
+                var paramValues = HttpUtility.ParseQueryString(builder.Query);
+                paramValues.Add("orderId", id.ToString());
+                builder.Query = paramValues.ToString();
+
                 var callbackRequest = new AcclaroRequest($"/orders/{id}/callback", Method.Post, Creds);
-                callbackRequest.AddParameter("url", input.CallbackUrl);
+                callbackRequest.AddParameter("url", builder.Uri.ToString());
                 await Client.ExecuteAcclaro(callbackRequest);
             }
 
