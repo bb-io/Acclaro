@@ -1,19 +1,33 @@
 ﻿using Apps.Acclaro.Callbacks.Payload;
+using Apps.Acclaro.Dtos;
+using Apps.Acclaro.Models.Responses.Files;
+using Apps.Acclaro.Models.Responses.Orders;
+using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.Sdk.Common.Webhooks;
 using Newtonsoft.Json;
+using RestSharp;
 
 namespace Apps.Acclaro.Callbacks
 {
     [WebhookList]
-    public class CallbackList
+    public class CallbackList : AcclaroInvocable
     {
-        [Webhook("On order updated", Description = "On order updated")]
-        public async Task<WebhookResponse<EmptyPayload>> OrderUpdated(WebhookRequest webhookRequest)
+        public CallbackList(InvocationContext invocationContext) : base(invocationContext)
         {
-            return new WebhookResponse<EmptyPayload>
+        }
+
+        [Webhook("On order updated", Description = "On order updated")]
+        public async Task<WebhookResponse<OrderResponse>> OrderUpdated(WebhookRequest webhookRequest)
+        {
+            var orderId = webhookRequest.QueryParameters["orderId"];
+
+            var request = new AcclaroRequest($"/orders/{orderId}", Method.Get, Creds);
+            var response = await Client.ExecuteAcclaro<OrderDto>(request);
+
+            return new WebhookResponse<OrderResponse>
             {
                 HttpResponseMessage = null,
-                Result = new EmptyPayload()
+                Result = new(response)
             };
         }
 
@@ -43,12 +57,18 @@ namespace Apps.Acclaro.Callbacks
         }
 
         [Webhook("On order file updated", Description = "On order file updated")]
-        public async Task<WebhookResponse<EmptyPayload>> OrderFileUpdated(WebhookRequest webhookRequest)
+        public async Task<WebhookResponse<FileInfoResponse>> OrderFileUpdated(WebhookRequest webhookRequest)
         {
-            return new WebhookResponse<EmptyPayload>
+            var orderId = webhookRequest.QueryParameters["orderId"];
+            var fileId = webhookRequest.QueryParameters["fileId"];
+
+            var request = new AcclaroRequest($"/orders/{orderId}/files/{fileId}/status", Method.Get, Creds);
+            var response = await Client.ExecuteAcclaro<FileInfoDto>(request);
+
+            return new WebhookResponse<FileInfoResponse>
             {
                 HttpResponseMessage = null,
-                Result = new EmptyPayload()
+                Result = new(response)
             };
         }
     }

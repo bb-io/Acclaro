@@ -9,6 +9,7 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using RestSharp;
+using System.Web;
 
 namespace Apps.Acclaro.Actions
 {
@@ -50,8 +51,14 @@ namespace Apps.Acclaro.Actions
 
             if (file.CallbackUrl != null)
             {
+                var builder = new UriBuilder(file.CallbackUrl);
+                var paramValues = HttpUtility.ParseQueryString(builder.Query);
+                paramValues.Add("orderId", input.Id);
+                paramValues.Add("fileId", id.ToString());
+                builder.Query = paramValues.ToString();
+
                 var callbackRequest = new AcclaroRequest($"/orders/{input.Id}/files/{id}/callback", Method.Post, Creds);
-                callbackRequest.AddParameter("url", file.CallbackUrl);
+                callbackRequest.AddParameter("url", builder.Uri.ToString());
                 await Client.ExecuteAcclaro(callbackRequest);
             }
 
