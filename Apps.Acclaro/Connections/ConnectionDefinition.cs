@@ -15,6 +15,7 @@ namespace Apps.Acclaro.Connections
                 ConnectionUsage = ConnectionUsage.Actions,
                 ConnectionProperties = new List<ConnectionProperty>()
                 {
+                    new("url") {DisplayName = "URL", Description = "e.g. \"https://apisandbox.acclaro.com\""},
                     new("apiToken") { DisplayName = "API token", Sensitive = true },
                 }
             }
@@ -23,6 +24,13 @@ namespace Apps.Acclaro.Connections
         public IEnumerable<AuthenticationCredentialsProvider> CreateAuthorizationCredentialsProviders(
             Dictionary<string, string> values)
         {
+            var url = values.First(v => v.Key == "url");
+            yield return new AuthenticationCredentialsProvider(
+                AuthenticationCredentialsRequestLocation.None,
+                url.Key,
+                url.Value + "/api/v2"
+            );
+
             var apiToken = values.First(v => v.Key == "apiToken");
             yield return new AuthenticationCredentialsProvider(
                 AuthenticationCredentialsRequestLocation.None,
