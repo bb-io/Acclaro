@@ -10,6 +10,7 @@ using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using RestSharp;
 using System.Web;
+using Blackbird.Applications.Sdk.Common.Authentication;
 
 namespace Apps.Acclaro.Actions
 {
@@ -79,17 +80,22 @@ namespace Apps.Acclaro.Actions
             return new(response);
         }
 
-        //[Action("List all order files", Description = "List all order files")]
-        //public ListFilesResponse ListOrderFiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        //[ActionParameter] string orderId)
-        //{
-        //    var client = new AcclaroClient();
-        //    var request = new AcclaroRequest($"/orders/{orderId}/files-info", Method.Get, authenticationCredentialsProviders);
-        //    return new ListFilesResponse()
-        //    {
-        //        Files = client.Get<ResponseWrapper<List<FileInfoStatusDto>>>(request).Data
-        //    };
-        //}
+        [Action("Search order files", Description = "Search for files in an order depending on certain criteria")]
+        public async Task<SearchFilesResponse> ListOrderFiles([ActionParameter] OrderRequest input, [ActionParameter] FileSearchRequest search)
+        {
+            var request = new AcclaroRequest($"/orders/{input.Id}/files-info", Method.Get, Creds);
+
+            if (search.Status != null) request.AddQueryParameter("status", search.Status);
+            if (search.FileType != null) request.AddQueryParameter("filetype", search.FileType);
+            if (search.SourceLanguage != null) request.AddQueryParameter("sourcelang", string.Join(',', search.SourceLanguage));
+            if (search.TargetLanguage != null) request.AddQueryParameter("targetlang", string.Join(',', search.TargetLanguage));
+
+            var response = await Client.ExecuteAcclaro<List<FileInfoDto>>(request);
+            return new SearchFilesResponse
+            {
+                Files = response.Select(x => new FileInfoResponse(x))
+            };
+        }
 
         [Action("Get file information", Description = "Get information of a file")]
         public async Task<FileInfoResponse> GetFileInfo([ActionParameter] OrderRequest input,

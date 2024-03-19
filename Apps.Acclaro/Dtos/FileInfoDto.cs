@@ -40,7 +40,10 @@ namespace Apps.Acclaro.Dtos
         [Display("Source language")]
         public LanguageDto Sourcelang { get; set; }
         
-        [Display("Target languages")]
-        public List<LanguageDto> Targetlang { get; set; }
+        [Display("Target language")]
+        public LanguageDto Targetlang { get; set; }
+
+        [JsonProperty("clientref")]
+        public string Clientref { get; set; }
     }
 }
