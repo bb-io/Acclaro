@@ -45,5 +45,11 @@ namespace Apps.Acclaro.Dtos
 
         [JsonProperty("clientref")]
         public string Clientref { get; set; }
+
+        [JsonProperty("targetfile")]
+        public int? Targetfile { get; set; }
+
+        [JsonProperty("previewfile")]
+        public int? Previewfile { get; set; }
     }
 }
