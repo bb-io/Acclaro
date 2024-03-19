@@ -43,7 +43,13 @@ namespace Apps.Acclaro.Models.Responses.Files
         public LanguageDto Targetlang { get; set; }
 
         [Display("Client reference")]
-        public string ClientRef { get; set; }
+        public string? ClientRef { get; set; }
+
+        [Display("Target file ID")]
+        public string? TargetFileId { get; set; }
+
+        [Display("Preview file ID")]
+        public string? PreviewFileId { get; set; }
 
         public FileInfoResponse(FileInfoDto dto)
         {
@@ -62,6 +68,8 @@ namespace Apps.Acclaro.Models.Responses.Files
             Sourcelang = dto.Sourcelang;
             Targetlang = dto.Targetlang;
             ClientRef = dto.Clientref;
+            TargetFileId = dto.Targetfile.HasValue ? dto.Targetfile.Value.ToString() : null;
+            PreviewFileId = dto.Previewfile.HasValue ? dto.Previewfile.Value.ToString() : null;
         }
 
     }
