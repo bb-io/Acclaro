@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <Product>My Acclaro</Product>
     <Description>Streamlines translation workflows for your enterprise from order creation through review.</Description>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <AssemblyName>Apps.Acclaro</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
