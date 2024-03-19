@@ -1,9 +1,11 @@
 ﻿using Apps.Acclaro.Dtos;
 using Apps.Acclaro.Models.Requests;
 using Apps.Acclaro.Models.Requests.Orders;
+using Apps.Acclaro.Models.Responses;
 using Apps.Acclaro.Models.Responses.Orders;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 using System;
@@ -165,6 +167,7 @@ namespace Apps.Acclaro.Actions
         {
             var request = new AcclaroRequest($"/orders/{input.Id}", Method.Get, Creds);
             var response = await Client.ExecuteAcclaro<OrderDto>(request);
+
             return new(response);
         }
 

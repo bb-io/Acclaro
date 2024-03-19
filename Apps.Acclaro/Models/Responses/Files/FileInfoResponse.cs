@@ -39,8 +39,11 @@ namespace Apps.Acclaro.Models.Responses.Files
         [Display("Source language")]
         public LanguageDto Sourcelang { get; set; }
 
-        [Display("Target languages")]
-        public List<LanguageDto> Targetlang { get; set; }
+        [Display("Target language")]
+        public LanguageDto Targetlang { get; set; }
+
+        [Display("Client reference")]
+        public string ClientRef { get; set; }
 
         public FileInfoResponse(FileInfoDto dto)
         {
@@ -58,6 +61,7 @@ namespace Apps.Acclaro.Models.Responses.Files
             Uploaded = dto.Uploaded;
             Sourcelang = dto.Sourcelang;
             Targetlang = dto.Targetlang;
+            ClientRef = dto.Clientref;
         }
 
     }
