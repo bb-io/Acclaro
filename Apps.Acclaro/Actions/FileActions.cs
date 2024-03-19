@@ -110,14 +110,13 @@ namespace Apps.Acclaro.Actions
         public async Task<FileDataResponse> DownloadFile([ActionParameter] OrderRequest input, 
             [ActionParameter] FileRequest file)
         {
+            var fileInfo = await GetFileInfo(input, file);
+
             var request = new AcclaroRequest($"/orders/{input.Id}/files/{file.FileId}", Method.Get, Creds);
             var response = Client.Get(request);
-            var filename = response.ContentHeaders.First(h => h.Name == "Content-Disposition").Value.ToString()
-                .Split('"')[1];
-            var contentType = response.ContentType;
 
             using var stream = new MemoryStream(response.RawBytes);
-            var fileReference = await _fileManagementClient.UploadAsync(stream, contentType, filename);
+            var fileReference = await _fileManagementClient.UploadAsync(stream, fileInfo.Mimetype, fileInfo.PlunetFilename);
             return new FileDataResponse { File = fileReference };
         }
 
