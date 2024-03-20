@@ -44,7 +44,7 @@ namespace Apps.Acclaro.Models.Responses.Files
         [Display("Source language")]
         public LanguageDto Sourcelang { get; set; }
 
-        [Display("Target language")]
+        [Display("Target languages")]
         public IEnumerable<LanguageDto> Targetlang { get; set; }
 
         [Display("Client reference")]
