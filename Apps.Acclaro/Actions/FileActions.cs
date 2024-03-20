@@ -26,7 +26,7 @@ namespace Apps.Acclaro.Actions
         }
 
         [Action("Upload file", Description = "Upload a file to an order")]
-        public async Task<FileInfoResponse> UploadFile([ActionParameter] OrderRequest input,
+        public async Task<FileInfoResponseMultipleTarget> UploadFile([ActionParameter] OrderRequest input,
             [ActionParameter] UploadFileRequest file, [ActionParameter] RequiredLanguageRequest languages)
         {
             var path = "files";
@@ -46,7 +46,7 @@ namespace Apps.Acclaro.Actions
             var fileStream = await _fileManagementClient.DownloadAsync(file.File);
             var fileBytes = await fileStream.GetByteData();
             request.AddFile("file", fileBytes, file.File.Name);
-            var response = await Client.ExecuteAcclaro<FileInfoDto>(request);
+            var response = await Client.ExecuteAcclaro<FileInfoDtoMultipleTarget>(request);
 
             var id = response.Fileid;
 
