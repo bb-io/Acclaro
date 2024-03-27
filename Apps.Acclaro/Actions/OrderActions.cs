@@ -171,6 +171,22 @@ namespace Apps.Acclaro.Actions
             return new(response);
         }
 
+        [Action("Does order exist", Description = "Find out whether an order with a certain ID exists")]
+        public async Task<OrderExistsResponse> DoesOrderExist([ActionParameter] OrderRequest input)
+        {
+            try
+            {
+                var request = new AcclaroRequest($"/orders/{input.Id}", Method.Get, Creds);
+                var response = await Client.ExecuteAcclaro<OrderDto>(request);
+            }
+            catch
+            {
+                return new OrderExistsResponse { Exists = false };
+            }
+
+            return new OrderExistsResponse { Exists = true };
+        }
+
         [Action("Delete order", Description = "Delete order")]
         public Task DeleteOrder([ActionParameter] OrderRequest input)
         {
