@@ -120,6 +120,16 @@ namespace Apps.Acclaro.Actions
             return new FileDataResponse { File = fileReference };
         }
 
+        [Action("Get Source File ID", Description = "Get Source File ID from Target File ID")]
+        public async Task<string> GetSourceFileID([ActionParameter] OrderRequest input,
+            [ActionParameter] FileRequest file)
+        {
+            var request = new AcclaroRequest($"/orders/{input.Id}/files-info", Method.Get, Creds);
+            var response = await Client.ExecuteAcclaro<List<FileInfoDto>>(request);
+            var sourcefileinfo =  response.SingleOrDefault(x => x.Targetfile.ToString() == file.FileId);
+            return sourcefileinfo.Fileid.ToString();
+        }
+
         //[Action("Delete file", Description = "Delete file")]
         //public void DeleteFile(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
         //    [ActionParameter] string orderId, [ActionParameter] string fileId)
