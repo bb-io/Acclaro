@@ -48,10 +48,10 @@ namespace Apps.Acclaro.Dtos
         public int Targetfilecount { get; set; }
 
         [JsonProperty("requested_due_date")]
-        public DateTime RequestedDueDate { get; set; }
+        public DateTime? RequestedDueDate { get; set; }
 
         [JsonProperty("duedate")]
-        public DateTime Duedate { get; set; }
+        public DateTime? Duedate { get; set; }
 
         [JsonProperty("clientref")]
         public string Clientref { get; set; }
@@ -66,10 +66,10 @@ namespace Apps.Acclaro.Dtos
         //public object Review { get; set; }
 
         [JsonProperty("created")]
-        public DateTime Created { get; set; }
+        public DateTime? Created { get; set; }
             
         [JsonProperty("modified")]
-        public DateTime Modified { get; set; }
+        public DateTime? Modified { get; set; }
 
         [JsonProperty("sourcelang")]
         public List<string> Sourcelang { get; set; }

@@ -11,7 +11,7 @@ namespace Apps.Acclaro
 
         public AcclaroInvocable(InvocationContext invocationContext) : base(invocationContext)
         {
-            Client = new AcclaroClient();
+            Client = new AcclaroClient(invocationContext.AuthenticationCredentialsProviders);
         }
     }
 }

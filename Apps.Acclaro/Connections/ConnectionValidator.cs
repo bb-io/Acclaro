@@ -11,7 +11,7 @@ namespace Apps.Acclaro.Connections
         public async ValueTask<ConnectionValidationResponse> ValidateConnection(
        IEnumerable<AuthenticationCredentialsProvider> authProviders, CancellationToken cancellationToken)
         {
-            var client = new AcclaroClient();
+            var client = new AcclaroClient(authProviders);
             var request = new AcclaroRequest("/info/language-pairs", Method.Get, authProviders);
             try
             {

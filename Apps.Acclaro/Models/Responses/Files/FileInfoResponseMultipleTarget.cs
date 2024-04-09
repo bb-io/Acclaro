@@ -1,9 +1,14 @@
 ﻿using Apps.Acclaro.Dtos;
 using Blackbird.Applications.Sdk.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Apps.Acclaro.Models.Responses.Files
 {
-    public class FileInfoResponse
+    public class FileInfoResponseMultipleTarget
     {
         [Display("File ID")]
         public string FileId { get; set; }
@@ -39,8 +44,8 @@ namespace Apps.Acclaro.Models.Responses.Files
         [Display("Source language")]
         public LanguageDto Sourcelang { get; set; }
 
-        [Display("Target language")]
-        public LanguageDto Targetlang { get; set; }
+        [Display("Target languages")]
+        public IEnumerable<LanguageDto> Targetlang { get; set; }
 
         [Display("Client reference")]
         public string? ClientRef { get; set; }
@@ -51,12 +56,12 @@ namespace Apps.Acclaro.Models.Responses.Files
         [Display("Preview file ID")]
         public string? PreviewFileId { get; set; }
 
-        public FileInfoResponse(FileInfoDto dto)
+        public FileInfoResponseMultipleTarget(FileInfoDtoMultipleTarget dto)
         {
             FileId = dto.Fileid.ToString();
             Id = dto.Id.ToString();
             OrderId = dto.Orderid.ToString();
-            Filetype = dto.Filetype; 
+            Filetype = dto.Filetype;
             Originalfilename = dto.Originalfilename;
             Filename = dto.Filename;
             PlunetFilename = dto.PlunetFilename;
@@ -71,6 +76,5 @@ namespace Apps.Acclaro.Models.Responses.Files
             TargetFileId = dto.Targetfile.HasValue ? dto.Targetfile.Value.ToString() : null;
             PreviewFileId = dto.Previewfile.HasValue ? dto.Previewfile.Value.ToString() : null;
         }
-
     }
 }

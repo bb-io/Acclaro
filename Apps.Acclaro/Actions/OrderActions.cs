@@ -1,12 +1,17 @@
 ﻿using Apps.Acclaro.Dtos;
 using Apps.Acclaro.Models.Requests;
 using Apps.Acclaro.Models.Requests.Orders;
+using Apps.Acclaro.Models.Responses;
 using Apps.Acclaro.Models.Responses.Orders;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
+using System;
 using System.Globalization;
+using System.Web;
+using System.Xml.Linq;
 
 namespace Apps.Acclaro.Actions
 {
@@ -50,8 +55,13 @@ namespace Apps.Acclaro.Actions
 
             if (input.CallbackUrl != null)
             {
+                var builder = new UriBuilder(input.CallbackUrl);
+                var paramValues = HttpUtility.ParseQueryString(builder.Query);
+                paramValues.Add("orderId", id.ToString());
+                builder.Query = paramValues.ToString();
+
                 var callbackRequest = new AcclaroRequest($"/orders/{id}/callback", Method.Post, Creds);
-                callbackRequest.AddParameter("url", input.CallbackUrl);
+                callbackRequest.AddParameter("url", builder.Uri.ToString());
                 await Client.ExecuteAcclaro(callbackRequest);
             }
 
@@ -73,20 +83,65 @@ namespace Apps.Acclaro.Actions
             {
                 foreach(var target in languages.TargetLanguages)
                 {
-                    if (languages.SourceLanguage != null)
+                    if (languages.SourceLanguage == null)
                     {
                         var langRequest = new AcclaroRequest($"/orders/{id}/language", Method.Post, Creds);
-                        request.AddParameter("targetlang", target);
+                        langRequest.AddParameter("targetlang", target);
                         await Client.ExecuteAcclaro(langRequest);
                     }
                     else
                     {
                         var langRequest = new AcclaroRequest($"/orders/{id}/language-pair", Method.Post, Creds);
-                        request.AddParameter("sourcelang", languages.SourceLanguage);
-                        request.AddParameter("targetlang", target);
+                        langRequest.AddParameter("sourcelang", languages.SourceLanguage);
+                        langRequest.AddParameter("targetlang", target);
                         await Client.ExecuteAcclaro(langRequest);
                     }
                 }               
+            }
+
+            return new(result);
+        }
+
+        [Action("Update order", Description = "UPdate order")]
+        public async Task<OrderResponse> UpdateOrder([ActionParameter] OrderRequest order, [ActionParameter] UpdateOrderRequest input, [ActionParameter] LanguageRequest languages)
+        {
+            var currentOrderRequest = new AcclaroRequest($"/orders/{order.Id}", Method.Get, Creds);
+            var currentOrder = await Client.ExecuteAcclaro<OrderDto>(currentOrderRequest);
+
+            var request = new AcclaroRequest($"/orders/{order.Id}", Method.Post, Creds);
+            request.AddParameter("name", input.Name ?? currentOrder.Name);
+
+            request.AddParameter("comment", input.Comment ?? currentOrder.Comments);
+
+            if (input.DueDate.HasValue || currentOrder.Duedate.HasValue)
+                request.AddParameter("duedate", input.DueDate.HasValue ? input.DueDate.Value.ToString("o", CultureInfo.InvariantCulture) : currentOrder.Duedate!.Value.ToString("o", CultureInfo.InvariantCulture));
+
+            request.AddParameter("delivery", input.Delivery ?? currentOrder.Delivery);
+
+            request.AddParameter("estwordcount", input.EstimatedWordCount.HasValue ? input.EstimatedWordCount.Value : currentOrder.Estimatedwordcount);
+
+            request.AddParameter("type", input.Type ?? currentOrder.Ordertype);
+
+            var result = await Client.ExecuteAcclaro<OrderDto>(request);
+
+            if (languages.TargetLanguages != null)
+            {
+                foreach (var target in languages.TargetLanguages)
+                {
+                    if (languages.SourceLanguage == null)
+                    {
+                        var langRequest = new AcclaroRequest($"/orders/{order.Id}/language", Method.Post, Creds);
+                        langRequest.AddParameter("targetlang", target);
+                        await Client.ExecuteAcclaro(langRequest);
+                    }
+                    else
+                    {
+                        var langRequest = new AcclaroRequest($"/orders/{order.Id}/language-pair", Method.Post, Creds);
+                        langRequest.AddParameter("sourcelang", languages.SourceLanguage);
+                        langRequest.AddParameter("targetlang", target);
+                        await Client.ExecuteAcclaro(langRequest);
+                    }
+                }
             }
 
             return new(result);
@@ -112,10 +167,25 @@ namespace Apps.Acclaro.Actions
         {
             var request = new AcclaroRequest($"/orders/{input.Id}", Method.Get, Creds);
             var response = await Client.ExecuteAcclaro<OrderDto>(request);
+
             return new(response);
         }
 
-        // Todo: edit order
+        [Action("Does order exist", Description = "Find out whether an order with a certain ID exists")]
+        public async Task<OrderExistsResponse> DoesOrderExist([ActionParameter] OrderRequest input)
+        {
+            try
+            {
+                var request = new AcclaroRequest($"/orders/{input.Id}", Method.Get, Creds);
+                var response = await Client.ExecuteAcclaro<OrderDto>(request);
+            }
+            catch
+            {
+                return new OrderExistsResponse { Exists = false };
+            }
+
+            return new OrderExistsResponse { Exists = true };
+        }
 
         [Action("Delete order", Description = "Delete order")]
         public Task DeleteOrder([ActionParameter] OrderRequest input)
@@ -130,7 +200,39 @@ namespace Apps.Acclaro.Actions
             var request = new AcclaroRequest($"/orders/{input.Id}/submit", Method.Post, Creds);
             return Client.ExecuteAcclaro(request);
         }
-        
+
+        [Action("Add order comment", Description = "Add a new comment to an order")]
+        public Task AddComment([ActionParameter] OrderRequest input, [ActionParameter] NewCommentRequest newComment)
+        {
+            var request = new AcclaroRequest($"/orders/{input.Id}/comment", Method.Post, Creds);
+            request.AddParameter("comment", newComment.Comment);
+            return Client.ExecuteAcclaro(request);
+        }
+
+        [Action("Update order comment", Description = "Updates an exisitng order comment (note: changes comment ID)")]
+        public Task UpdateComment([ActionParameter] OrderRequest input, [ActionParameter] CommentRequest comment, [ActionParameter] NewCommentRequest newComment)
+        {
+            var request = new AcclaroRequest($"/orders/{input.Id}/comment/{comment.CommentId}", Method.Post, Creds);
+            request.AddParameter("comment", newComment.Comment);
+            return Client.ExecuteAcclaro(request);
+        }
+
+        [Action("Get order comments", Description = "Get a list of all comments attached to an order")]
+        public async Task<ListCommentsResponse> GetComments([ActionParameter] OrderRequest input, [ActionParameter] OptionalFormatInput format)
+        {
+            var request = new AcclaroRequest($"/orders/{input.Id}/comments", Method.Get, Creds);
+
+            if (format.Format != null)
+                request.AddQueryParameter("format", format.Format);
+
+            var result = await Client.ExecuteAcclaro<List<CommentDto>>(request);
+
+            return new ListCommentsResponse()
+            {
+                Comments = result.Select(x => new CommentResponse(x))
+            };
+        }
+
     }
 }
 

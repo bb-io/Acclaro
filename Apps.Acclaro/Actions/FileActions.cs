@@ -9,6 +9,8 @@ using Blackbird.Applications.Sdk.Common.Invocation;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Utils.Extensions.Files;
 using RestSharp;
+using System.Web;
+using Blackbird.Applications.Sdk.Common.Authentication;
 
 namespace Apps.Acclaro.Actions
 {
@@ -24,7 +26,7 @@ namespace Apps.Acclaro.Actions
         }
 
         [Action("Upload file", Description = "Upload a file to an order")]
-        public async Task<FileInfoResponse> UploadFile([ActionParameter] OrderRequest input,
+        public async Task<FileInfoResponseMultipleTarget> UploadFile([ActionParameter] OrderRequest input,
             [ActionParameter] UploadFileRequest file, [ActionParameter] RequiredLanguageRequest languages)
         {
             var path = "files";
@@ -44,14 +46,20 @@ namespace Apps.Acclaro.Actions
             var fileStream = await _fileManagementClient.DownloadAsync(file.File);
             var fileBytes = await fileStream.GetByteData();
             request.AddFile("file", fileBytes, file.File.Name);
-            var response = await Client.ExecuteAcclaro<FileInfoDto>(request);
+            var response = await Client.ExecuteAcclaro<FileInfoDtoMultipleTarget>(request);
 
             var id = response.Fileid;
 
             if (file.CallbackUrl != null)
             {
+                var builder = new UriBuilder(file.CallbackUrl);
+                var paramValues = HttpUtility.ParseQueryString(builder.Query);
+                paramValues.Add("orderId", input.Id);
+                paramValues.Add("fileId", id.ToString());
+                builder.Query = paramValues.ToString();
+
                 var callbackRequest = new AcclaroRequest($"/orders/{input.Id}/files/{id}/callback", Method.Post, Creds);
-                callbackRequest.AddParameter("url", file.CallbackUrl);
+                callbackRequest.AddParameter("url", builder.Uri.ToString());
                 await Client.ExecuteAcclaro(callbackRequest);
             }
 
@@ -72,17 +80,22 @@ namespace Apps.Acclaro.Actions
             return new(response);
         }
 
-        //[Action("List all order files", Description = "List all order files")]
-        //public ListFilesResponse ListOrderFiles(IEnumerable<AuthenticationCredentialsProvider> authenticationCredentialsProviders,
-        //[ActionParameter] string orderId)
-        //{
-        //    var client = new AcclaroClient();
-        //    var request = new AcclaroRequest($"/orders/{orderId}/files-info", Method.Get, authenticationCredentialsProviders);
-        //    return new ListFilesResponse()
-        //    {
-        //        Files = client.Get<ResponseWrapper<List<FileInfoStatusDto>>>(request).Data
-        //    };
-        //}
+        [Action("Search order files", Description = "Search for files in an order depending on certain criteria")]
+        public async Task<SearchFilesResponse> ListOrderFiles([ActionParameter] OrderRequest input, [ActionParameter] FileSearchRequest search)
+        {
+            var request = new AcclaroRequest($"/orders/{input.Id}/files-info", Method.Get, Creds);
+
+            if (search.Status != null) request.AddQueryParameter("status", search.Status);
+            if (search.FileType != null) request.AddQueryParameter("filetype", search.FileType);
+            if (search.SourceLanguage != null) request.AddQueryParameter("sourcelang", string.Join(',', search.SourceLanguage));
+            if (search.TargetLanguage != null) request.AddQueryParameter("targetlang", string.Join(',', search.TargetLanguage));
+
+            var response = await Client.ExecuteAcclaro<List<FileInfoDto>>(request);
+            return new SearchFilesResponse
+            {
+                Files = response.Select(x => new FileInfoResponse(x))
+            };
+        }
 
         [Action("Get file information", Description = "Get information of a file")]
         public async Task<FileInfoResponse> GetFileInfo([ActionParameter] OrderRequest input,
@@ -97,15 +110,24 @@ namespace Apps.Acclaro.Actions
         public async Task<FileDataResponse> DownloadFile([ActionParameter] OrderRequest input, 
             [ActionParameter] FileRequest file)
         {
+            var fileInfo = await GetFileInfo(input, file);
+
             var request = new AcclaroRequest($"/orders/{input.Id}/files/{file.FileId}", Method.Get, Creds);
             var response = Client.Get(request);
-            var filename = response.ContentHeaders.First(h => h.Name == "Content-Disposition").Value.ToString()
-                .Split('"')[1];
-            var contentType = response.ContentType;
 
             using var stream = new MemoryStream(response.RawBytes);
-            var fileReference = await _fileManagementClient.UploadAsync(stream, contentType, filename);
+            var fileReference = await _fileManagementClient.UploadAsync(stream, fileInfo.Mimetype, fileInfo.PlunetFilename);
             return new FileDataResponse { File = fileReference };
+        }
+
+        [Action("Get source file", Description = "Get the source file that corresponds with a target file")]
+        public async Task<FileInfoResponse> GetSourceFileID([ActionParameter] OrderRequest input,
+            [ActionParameter] FileRequest file)
+        {
+            var request = new AcclaroRequest($"/orders/{input.Id}/files-info", Method.Get, Creds);
+            var response = await Client.ExecuteAcclaro<List<FileInfoDto>>(request);
+            var sourcefileinfo =  response.SingleOrDefault(x => x.Targetfile.ToString() == file.FileId);
+            return new(sourcefileinfo);
         }
 
         //[Action("Delete file", Description = "Delete file")]
