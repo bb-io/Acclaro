@@ -1,13 +1,12 @@
-﻿using Blackbird.Applications.Sdk.Utils.Sdk.DataSourceHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
 
-namespace Apps.Acclaro.DataSourceHandlers.EnumHandlers
+namespace Apps.Acclaro.DataSourceHandlers.EnumHandlers;
+
+public class OrderProcessTypeHandler : IStaticDataSourceHandler
 {
-    public class OrderProcessTypeHandler : EnumDataHandler
+    public Dictionary<string, string> GetData() => new()
     {
-        protected override Dictionary<string, string> EnumValues => new()
-        {
-            { "string", "String based" },
-            { "", "File based" }
-        };
-    }
+        { "string", "String based" },
+        { "", "File based" }
+    };
 }

@@ -1,17 +1,16 @@
-﻿using Blackbird.Applications.Sdk.Utils.Sdk.DataSourceHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
 
-namespace Apps.Acclaro.DataSourceHandlers.EnumHandlers
+namespace Apps.Acclaro.DataSourceHandlers.EnumHandlers;
+
+public class DeliveryHandler : IStaticDataSourceHandler
 {
-    public class DeliveryHandler : EnumDataHandler
+    public Dictionary<string, string> GetData() => new()
     {
-        protected override Dictionary<string, string> EnumValues => new()
-        {
-            { "email", "Email" },
-            { "box", "Box" },
-            { "dropbox", "Dropbox" },
-            { "google", "Google" },
-            { "zendesk", "Zendesk" },
-            { "hubspot", "Hubspot" },
-        };
-    }
+        { "email", "Email" },
+        { "box", "Box" },
+        { "dropbox", "Dropbox" },
+        { "google", "Google" },
+        { "zendesk", "Zendesk" },
+        { "hubspot", "Hubspot" },
+    };
 }

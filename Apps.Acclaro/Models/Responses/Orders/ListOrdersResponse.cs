@@ -1,7 +1,6 @@
-﻿namespace Apps.Acclaro.Models.Responses.Orders
+﻿namespace Apps.Acclaro.Models.Responses.Orders;
+
+public class ListOrdersResponse
 {
-    public class ListOrdersResponse
-    {
-        public IEnumerable<OrderResponse> Orders { get; set; }
-    }
+    public IEnumerable<OrderResponse> Orders { get; set; }
 }

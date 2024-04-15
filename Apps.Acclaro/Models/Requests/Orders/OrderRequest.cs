@@ -2,12 +2,11 @@
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 
-namespace Apps.Acclaro.Models.Requests.Orders
+namespace Apps.Acclaro.Models.Requests.Orders;
+
+public class OrderRequest
 {
-    public class OrderRequest
-    {
-        [Display("Order ID")]
-        [DataSource(typeof(OrderHandler))]
-        public string Id { get; set; }
-    }
+    [Display("Order ID")]
+    [DataSource(typeof(OrderHandler))]
+    public string Id { get; set; }
 }

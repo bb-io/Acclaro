@@ -1,7 +1,6 @@
-﻿namespace Apps.Acclaro.Dtos
+﻿namespace Apps.Acclaro.Dtos;
+
+public class OrderTypeDto
 {
-    public class OrderTypeDto
-    {
-        public string Name { get; set; }
-    }
+    public string Name { get; set; }
 }

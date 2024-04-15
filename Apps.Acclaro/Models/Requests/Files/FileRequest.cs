@@ -1,10 +1,9 @@
 ﻿using Blackbird.Applications.Sdk.Common;
 
-namespace Apps.Acclaro.Models.Requests.Files
+namespace Apps.Acclaro.Models.Requests.Files;
+
+public class FileRequest
 {
-    public class FileRequest
-    {
-        [Display("File ID")]
-        public string FileId { get; set; }
-    }
+    [Display("File ID")]
+    public string FileId { get; set; }
 }

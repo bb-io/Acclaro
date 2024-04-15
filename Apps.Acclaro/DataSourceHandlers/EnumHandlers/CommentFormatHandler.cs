@@ -1,18 +1,13 @@
-﻿using Blackbird.Applications.Sdk.Utils.Sdk.DataSourceHandlers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
 
-namespace Apps.Acclaro.DataSourceHandlers.EnumHandlers
+namespace Apps.Acclaro.DataSourceHandlers.EnumHandlers;
+
+public class CommentFormatHandler : IStaticDataSourceHandler
 {
-    public class CommentFormatHandler : EnumDataHandler
-    {
-        protected override Dictionary<string, string> EnumValues => new()
+    public Dictionary<string, string> GetData()
+        => new()
         {
             { "text", "Text" },
             { "html", "HTML" },
         };
-    }
 }

@@ -1,10 +1,11 @@
-﻿using Blackbird.Applications.Sdk.Utils.Sdk.DataSourceHandlers;
+﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
 
-namespace Apps.Acclaro.DataSourceHandlers.EnumHandlers
+namespace Apps.Acclaro.DataSourceHandlers.EnumHandlers;
+
+public class OrderStatusHandler : IStaticDataSourceHandler
 {
-    public class OrderStatusHandler : EnumDataHandler
-    {
-        protected override Dictionary<string, string> EnumValues => new()
+    public Dictionary<string, string> GetData()
+        => new()
         {
             { "new", "New" },
             { "in preparation", "In preparation" },
@@ -15,5 +16,4 @@ namespace Apps.Acclaro.DataSourceHandlers.EnumHandlers
             { "complete", "Complete" },
             { "canceled", "Canceled" },
         };
-    }
 }

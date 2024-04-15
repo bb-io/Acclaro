@@ -1,13 +1,12 @@
 ﻿using Apps.Acclaro.DataSourceHandlers.EnumHandlers;
 using Blackbird.Applications.Sdk.Common;
-using Blackbird.Applications.Sdk.Common.Dynamic;
+using Blackbird.Applications.Sdk.Common.Dictionaries;
 
-namespace Apps.Acclaro.Models.Requests.Orders
+namespace Apps.Acclaro.Models.Requests.Orders;
+
+public class SearchOrderRequest
 {
-    public class SearchOrderRequest
-    {
-        [Display("Status")]
-        [DataSource(typeof(OrderStatusHandler))]
-        public string? Status { get; set; }
-    }
+    [Display("Status")]
+    [StaticDataSource(typeof(OrderStatusHandler))]
+    public string? Status { get; set; }
 }
