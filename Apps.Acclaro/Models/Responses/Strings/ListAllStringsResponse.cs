@@ -1,9 +1,8 @@
 ﻿using Apps.Acclaro.Dtos;
 
-namespace Apps.Acclaro.Models.Responses.Strings
+namespace Apps.Acclaro.Models.Responses.Strings;
+
+public class ListAllStringsResponse
 {
-    public class ListAllStringsResponse
-    {
-        public IEnumerable<StringDto> Strings { get; set; }
-    }
+    public IEnumerable<StringDto> Strings { get; set; }
 }

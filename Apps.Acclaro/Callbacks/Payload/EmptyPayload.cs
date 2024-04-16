@@ -1,6 +1,5 @@
-﻿namespace Apps.Acclaro.Callbacks.Payload
+﻿namespace Apps.Acclaro.Callbacks.Payload;
+
+public class EmptyPayload
 {
-    public class EmptyPayload
-    {
-    }
 }

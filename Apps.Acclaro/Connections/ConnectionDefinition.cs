@@ -1,29 +1,29 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
 
-namespace Apps.Acclaro.Connections
+namespace Apps.Acclaro.Connections;
+
+public class ConnectionDefinition : IConnectionDefinition
 {
-    public class ConnectionDefinition : IConnectionDefinition
+
+    public IEnumerable<ConnectionPropertyGroup> ConnectionPropertyGroups => new List<ConnectionPropertyGroup>
     {
-
-        public IEnumerable<ConnectionPropertyGroup> ConnectionPropertyGroups => new List<ConnectionPropertyGroup>
+        new()
         {
-            new()
+            Name = "Developer API token",
+            AuthenticationType = ConnectionAuthenticationType.Undefined,
+            ConnectionUsage = ConnectionUsage.Actions,
+            ConnectionProperties = new List<ConnectionProperty>()
             {
-                Name = "Developer API token",
-                AuthenticationType = ConnectionAuthenticationType.Undefined,
-                ConnectionUsage = ConnectionUsage.Actions,
-                ConnectionProperties = new List<ConnectionProperty>()
-                {
-                    new("url") {DisplayName = "URL", Description = "e.g. \"https://apisandbox.acclaro.com\""},
-                    new("apiToken") { DisplayName = "API token", Sensitive = true },
-                }
+                new("url") {DisplayName = "URL", Description = "e.g. \"https://apisandbox.acclaro.com\""},
+                new("apiToken") { DisplayName = "API token", Sensitive = true },
             }
-        };
+        }
+    };
 
-        public IEnumerable<AuthenticationCredentialsProvider> CreateAuthorizationCredentialsProviders(
-            Dictionary<string, string> values)
-        {
+    public IEnumerable<AuthenticationCredentialsProvider> CreateAuthorizationCredentialsProviders(
+        Dictionary<string, string> values)
+    {
             var url = values.First(v => v.Key == "url");
             yield return new AuthenticationCredentialsProvider(
                 AuthenticationCredentialsRequestLocation.None,
@@ -38,5 +38,4 @@ namespace Apps.Acclaro.Connections
                 apiToken.Value
             );
         }
-    }
 }

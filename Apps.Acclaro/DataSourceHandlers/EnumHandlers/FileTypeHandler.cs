@@ -1,18 +1,12 @@
-﻿using Blackbird.Applications.Sdk.Utils.Sdk.DataSourceHandlers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Blackbird.Applications.Sdk.Common.Dictionaries;
 
-namespace Apps.Acclaro.DataSourceHandlers.EnumHandlers
+namespace Apps.Acclaro.DataSourceHandlers.EnumHandlers;
+
+public class FileTypeHandler : IStaticDataSourceHandler
 {
-    public class FileTypeHandler : EnumDataHandler
+    public Dictionary<string, string> GetData() => new()
     {
-        protected override Dictionary<string, string> EnumValues => new()
-        {
-            { "source", "Source file" },
-            { "target", "Target file" }
-        };
-    }
+        { "source", "Source file" },
+        { "target", "Target file" }
+    };
 }
