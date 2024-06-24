@@ -6,7 +6,48 @@ Blackbird is the new automation backbone for the language technology industry. B
 
 <!-- begin docs -->
 
-Documentation coming soon.
+## Actions
+
+###  File
+
+-**Upload file** Upload a file to an order
+-**Search order files** Search for files in an order depending on certain criteria
+-**Get file information** Get information of a file
+-**Download file** Download order file by ID
+-**Get source file** Get the source file that corresponds with a target file
+-**Delete file** Delete file
+
+###  Order
+
+-**Create order** Create order
+-**Update order** UPdate order
+-**Search orders** Search through all orders
+-**Get order** Get order by ID
+-**Does order exist** Find out whether an order with a certain ID exists
+-**Delete order** Delete order
+-**Submit order** Submit order
+-**Add order comment** Add a new comment to an order
+-**Update order comment** Updates an exisitng order comment (note: changes comment ID)
+-**Get order comments** Get a list of all comments attached to an order
+
+###  Quote
+
+-**Request quote** Request a quote for an order
+-**Get quote details** Get quote details by order ID
+-**Approve quote** Approve an order for which a quote was requested
+-**Decline quote** Decline an order for which a quote was requested
+
+###  String
+
+-**Get order strings** Get a list of all string of order
+-**Add strings to order** Add strings to an existing order. Note: order process type should be string.
+-**Get string** Get string by ID
+
+## Events
+
+-**On order updated**
+-**On order string updated**
+-**On order file updated**
 
 ## Feedback
 
