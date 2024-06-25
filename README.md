@@ -6,6 +6,8 @@ Blackbird is the new automation backbone for the language technology industry. B
 
 <!-- begin docs -->
 
+MyAcclaro is the portal app for Acclaro, designed to streamline the translation process for their customers. Through MyAcclaro, users can easily create quotes, initiate projects, upload files, and manage their translation needs efficiently.
+
 ## Actions
 
 ###  File
@@ -15,7 +17,6 @@ Blackbird is the new automation backbone for the language technology industry. B
 -**Get file information** Get information of a file
 -**Download file** Download order file by ID
 -**Get source file** Get the source file that corresponds with a target file
--**Delete file** Delete file
 
 ###  Order
 
@@ -33,7 +34,6 @@ Blackbird is the new automation backbone for the language technology industry. B
 ###  Quote
 
 -**Request quote** Request a quote for an order
--**Get quote details** Get quote details by order ID
 -**Approve quote** Approve an order for which a quote was requested
 -**Decline quote** Decline an order for which a quote was requested
 
@@ -41,7 +41,6 @@ Blackbird is the new automation backbone for the language technology industry. B
 
 -**Get order strings** Get a list of all string of order
 -**Add strings to order** Add strings to an existing order. Note: order process type should be string.
--**Get string** Get string by ID
 
 ## Events
 
