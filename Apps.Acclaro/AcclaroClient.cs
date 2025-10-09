@@ -1,5 +1,6 @@
 ﻿using Apps.Acclaro.Models.Responses;
 using Blackbird.Applications.Sdk.Common.Authentication;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -19,7 +20,7 @@ public class AcclaroClient : RestClient
         var result = JsonConvert.DeserializeObject<ResponseWrapper<object>>(response.Content);
 
         if (!result.Success)
-            throw new Exception(result.ErrorMessage);
+            throw new PluginApplicationException(result.ErrorMessage);
     }
 
     public async Task<T> ExecuteAcclaro<T>(AcclaroRequest request)
@@ -28,7 +29,7 @@ public class AcclaroClient : RestClient
         var result = JsonConvert.DeserializeObject<ResponseWrapper<T>>(response.Content);
 
         if (!result.Success)
-            throw new Exception(result.ErrorMessage);
+            throw new PluginApplicationException(result.ErrorMessage);
 
         return result.Data!;
     }

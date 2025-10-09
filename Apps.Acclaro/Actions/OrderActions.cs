@@ -11,7 +11,7 @@ using System.Web;
 
 namespace Apps.Acclaro.Actions;
 
-[ActionList]
+[ActionList("Order")]
 public class OrderActions : AcclaroInvocable
 {
     public OrderActions(InvocationContext invocationContext) : base(invocationContext)
