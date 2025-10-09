@@ -6,7 +6,7 @@ using RestSharp;
 
 namespace Apps.Acclaro.Actions;
 
-[ActionList]
+[ActionList("Quote")]
 public class QuoteActions : AcclaroInvocable
 {
     public QuoteActions(InvocationContext invocationContext) : base(invocationContext)

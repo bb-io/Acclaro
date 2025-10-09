@@ -5,11 +5,11 @@
     <Nullable>enable</Nullable>
     <Product>My Acclaro</Product>
     <Description>Streamlines translation workflows for your enterprise from order creation through review.</Description>
-    <Version>1.1.10</Version>
+    <Version>1.1.11</Version>
     <AssemblyName>Apps.Acclaro</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Blackbird.Applications.Sdk.Common" Version="2.6.0" />
+    <PackageReference Include="Blackbird.Applications.SDK.Blueprints" Version="1.0.0-rc.10308" />
     <PackageReference Include="Blackbird.Applications.SDK.Extensions.FileManagement" Version="1.0.1" />
     <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.0.16" />
   </ItemGroup>

@@ -10,7 +10,7 @@ using RestSharp;
 
 namespace Apps.Acclaro.Actions;
 
-[ActionList]
+[ActionList("String")]
 public class StringActions : AcclaroInvocable
 {
     public StringActions(InvocationContext invocationContext) : base(invocationContext)

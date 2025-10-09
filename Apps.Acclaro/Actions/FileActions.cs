@@ -13,7 +13,7 @@ using System.Web;
 
 namespace Apps.Acclaro.Actions;
 
-[ActionList]
+[ActionList("File")]
 public class FileActions : AcclaroInvocable
 {
     private readonly IFileManagementClient _fileManagementClient;
