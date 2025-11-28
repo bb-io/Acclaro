@@ -1,6 +1,7 @@
 {
-    "ConnectionDefinition": {
-        "access_token": ""
-    },
-    "TestFolder": "TestFiles"
+  "ConnectionDefinition": {
+    "url": "",
+    "apiToken": ""
+  },
+  "TestFolder": "TestFiles"
 }
