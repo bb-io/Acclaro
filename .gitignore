@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /ConsoleApp1
 /ConsoleApp2
+/Tests.Acclaro/appsettings.json

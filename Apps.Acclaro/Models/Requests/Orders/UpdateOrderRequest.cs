@@ -27,4 +27,7 @@ public class UpdateOrderRequest
     [Display("Order type")]
     [DataSource(typeof(OrderTypeHandler))]
     public string? Type { get; set; }
+
+    [Display("Program ID")]
+    public string? ProgramId { get; set; }
 }

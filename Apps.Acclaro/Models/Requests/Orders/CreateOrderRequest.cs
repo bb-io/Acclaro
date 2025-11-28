@@ -43,4 +43,7 @@ public class CreateOrderRequest
 
     [Display("Tags")]
     public IEnumerable<string>? Tags { get; set; }
+
+    [Display("Program ID")]
+    public string? ProgramId { get; set; }
 }

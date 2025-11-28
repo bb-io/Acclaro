@@ -1,0 +1,7 @@
+{
+  "ConnectionDefinition": {
+    "url": "",
+    "apiToken": ""
+  },
+  "TestFolder": "TestFiles"
+}
