@@ -4,6 +4,7 @@ using Apps.Acclaro.Models.Requests.Orders;
 using Apps.Acclaro.Models.Responses.Orders;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 using System.Globalization;
@@ -95,6 +96,19 @@ public class OrderActions : AcclaroInvocable
             }               
         }
 
+        if (!string.IsNullOrWhiteSpace(input.ProgramId))
+        {
+            if (!int.TryParse(input.ProgramId, out var programId))
+            {
+                throw new PluginApplicationException(
+                    $"Program ID '{input.ProgramId}' is not a valid integer.");
+            }
+
+            var programRequest = new AcclaroRequest($"/orders/{id}/programs", Method.Put, Creds);
+            programRequest.AddParameter("program_id", programId);
+            await Client.ExecuteAcclaro(programRequest);
+        }
+
         return new(result);
     }
 
@@ -140,7 +154,28 @@ public class OrderActions : AcclaroInvocable
             }
         }
 
+        if (!string.IsNullOrWhiteSpace(input.ProgramId))
+        {
+            if (!int.TryParse(input.ProgramId, out var programId))
+            {
+                throw new PluginApplicationException(
+                    $"Program ID '{input.ProgramId}' is not a valid integer.");
+            }
+
+            var programRequest = new AcclaroRequest($"/orders/{order.Id}/programs", Method.Put, Creds);
+            programRequest.AddParameter("program_id", programId);
+            await Client.ExecuteAcclaro(programRequest);
+        }
+
         return new(result);
+    }
+
+    [Action("Get programs list", Description = "Get the list of all programs")]
+    public async Task<IEnumerable<ProgramDto>> GetProgramsList()
+    {
+        var request = new AcclaroRequest("/programs/list", Method.Get, Creds);
+        var result = await Client.ExecuteAcclaro<List<ProgramDto>>(request);
+        return result;
     }
 
     [Action("Search orders", Description = "Search through all orders")]
