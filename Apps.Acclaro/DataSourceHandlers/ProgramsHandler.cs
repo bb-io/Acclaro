@@ -14,13 +14,13 @@ public class ProgramsHandler : AcclaroInvocable, IAsyncDataSourceHandler
     }
 
     public async Task<Dictionary<string, string>> GetDataAsync(
-        DataSourceContext context,
-        CancellationToken cancellationToken)
+    DataSourceContext context,
+    CancellationToken cancellationToken)
     {
         var request = new AcclaroRequest("/programs/list", Method.Get, Creds);
-        var response = await Client.ExecuteAcclaro<List<ProgramDto>>(request);
+        var result = await Client.ExecuteAcclaro<List<ProgramDto>>(request);
 
-        return response.Data
+        return result
             .Where(x =>
                 context.SearchString == null ||
                 x.Name.Contains(context.SearchString, StringComparison.OrdinalIgnoreCase))
@@ -28,4 +28,5 @@ public class ProgramsHandler : AcclaroInvocable, IAsyncDataSourceHandler
                 x => x.Id.ToString(),
                 x => x.Name);
     }
+
 }
