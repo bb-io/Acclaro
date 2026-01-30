@@ -29,5 +29,6 @@ public class UpdateOrderRequest
     public string? Type { get; set; }
 
     [Display("Program ID")]
+    [DataSource(typeof(ProgramsHandler))]
     public string? ProgramId { get; set; }
 }

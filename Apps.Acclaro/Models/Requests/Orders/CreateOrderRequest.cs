@@ -45,5 +45,6 @@ public class CreateOrderRequest
     public IEnumerable<string>? Tags { get; set; }
 
     [Display("Program ID")]
+    [DataSource(typeof(ProgramsHandler))]
     public string? ProgramId { get; set; }
 }
