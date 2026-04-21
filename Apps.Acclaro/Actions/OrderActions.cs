@@ -13,12 +13,8 @@ using System.Web;
 namespace Apps.Acclaro.Actions;
 
 [ActionList("Order")]
-public class OrderActions : AcclaroInvocable
+public class OrderActions(InvocationContext invocationContext) : AcclaroInvocable(invocationContext)
 {
-    public OrderActions(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
-
     [Action("Create order", Description = "Create order")]
     public async Task<OrderResponse> AddOrder([ActionParameter] CreateOrderRequest input, [ActionParameter] LanguageRequest languages)
     {
@@ -46,7 +42,7 @@ public class OrderActions : AcclaroInvocable
         if (!string.IsNullOrEmpty(input.ProcessType))
             request.AddParameter("process_type", input.ProcessType);
 
-        var result = await Client.ExecuteAcclaro<OrderDto>(request);
+        var result = await Client.ExecuteWithErrorHandling<OrderDto>(request);
 
         var id = result.Orderid;
 
@@ -59,21 +55,21 @@ public class OrderActions : AcclaroInvocable
 
             var callbackRequest = new AcclaroRequest($"/orders/{id}/callback", Method.Post, Creds);
             callbackRequest.AddParameter("url", builder.Uri.ToString());
-            await Client.ExecuteAcclaro(callbackRequest);
+            await Client.ExecuteWithErrorHandling(callbackRequest);
         }
 
         if (input.CallbackEmail != null)
         {
             var emailRequest = new AcclaroRequest($"/orders/{id}/email", Method.Post, Creds);
             emailRequest.AddParameter("email", input.CallbackEmail);
-            await Client.ExecuteAcclaro(emailRequest);
+            await Client.ExecuteWithErrorHandling(emailRequest);
         }
 
         if (input.Tags != null)
         {
             var tagRequest = new AcclaroRequest($"/orders/{id}/tag", Method.Post, Creds);
             tagRequest.AddParameter("tag", string.Join(',', input.Tags));
-            await Client.ExecuteAcclaro(tagRequest);
+            await Client.ExecuteWithErrorHandling(tagRequest);
         }
 
         if (languages.TargetLanguages != null)
@@ -84,14 +80,14 @@ public class OrderActions : AcclaroInvocable
                 {
                     var langRequest = new AcclaroRequest($"/orders/{id}/language", Method.Post, Creds);
                     langRequest.AddParameter("targetlang", target);
-                    await Client.ExecuteAcclaro(langRequest);
+                    await Client.ExecuteWithErrorHandling(langRequest);
                 }
                 else
                 {
                     var langRequest = new AcclaroRequest($"/orders/{id}/language-pair", Method.Post, Creds);
                     langRequest.AddParameter("sourcelang", languages.SourceLanguage);
                     langRequest.AddParameter("targetlang", target);
-                    await Client.ExecuteAcclaro(langRequest);
+                    await Client.ExecuteWithErrorHandling(langRequest);
                 }
             }               
         }
@@ -106,7 +102,7 @@ public class OrderActions : AcclaroInvocable
 
             var programRequest = new AcclaroRequest($"/orders/{id}/programs", Method.Put, Creds);
             programRequest.AddParameter("program_id", programId);
-            await Client.ExecuteAcclaro(programRequest);
+            await Client.ExecuteWithErrorHandling(programRequest);
         }
 
         return new(result);
@@ -116,7 +112,7 @@ public class OrderActions : AcclaroInvocable
     public async Task<OrderResponse> UpdateOrder([ActionParameter] OrderRequest order, [ActionParameter] UpdateOrderRequest input, [ActionParameter] LanguageRequest languages)
     {
         var currentOrderRequest = new AcclaroRequest($"/orders/{order.Id}", Method.Get, Creds);
-        var currentOrder = await Client.ExecuteAcclaro<OrderDto>(currentOrderRequest);
+        var currentOrder = await Client.ExecuteWithErrorHandling<OrderDto>(currentOrderRequest);
 
         var request = new AcclaroRequest($"/orders/{order.Id}", Method.Post, Creds);
         request.AddParameter("name", input.Name ?? currentOrder.Name);
@@ -132,7 +128,7 @@ public class OrderActions : AcclaroInvocable
 
         request.AddParameter("type", input.Type ?? currentOrder.Ordertype);
 
-        var result = await Client.ExecuteAcclaro<OrderDto>(request);
+        var result = await Client.ExecuteWithErrorHandling<OrderDto>(request);
 
         if (languages.TargetLanguages != null)
         {
@@ -142,14 +138,14 @@ public class OrderActions : AcclaroInvocable
                 {
                     var langRequest = new AcclaroRequest($"/orders/{order.Id}/language", Method.Post, Creds);
                     langRequest.AddParameter("targetlang", target);
-                    await Client.ExecuteAcclaro(langRequest);
+                    await Client.ExecuteWithErrorHandling(langRequest);
                 }
                 else
                 {
                     var langRequest = new AcclaroRequest($"/orders/{order.Id}/language-pair", Method.Post, Creds);
                     langRequest.AddParameter("sourcelang", languages.SourceLanguage);
                     langRequest.AddParameter("targetlang", target);
-                    await Client.ExecuteAcclaro(langRequest);
+                    await Client.ExecuteWithErrorHandling(langRequest);
                 }
             }
         }
@@ -164,7 +160,7 @@ public class OrderActions : AcclaroInvocable
 
             var programRequest = new AcclaroRequest($"/orders/{order.Id}/programs", Method.Put, Creds);
             programRequest.AddParameter("program_id", programId);
-            await Client.ExecuteAcclaro(programRequest);
+            await Client.ExecuteWithErrorHandling(programRequest);
         }
 
         return new(result);
@@ -174,7 +170,7 @@ public class OrderActions : AcclaroInvocable
     public async Task<IEnumerable<ProgramDto>> GetProgramsList()
     {
         var request = new AcclaroRequest("/programs/list", Method.Get, Creds);
-        var result = await Client.ExecuteAcclaro<List<ProgramDto>>(request);
+        var result = await Client.ExecuteWithErrorHandling<List<ProgramDto>>(request);
         return result;
     }
 
@@ -186,7 +182,7 @@ public class OrderActions : AcclaroInvocable
         if (input.Status != null)
             request.AddQueryParameter("status", input.Status);
 
-        var result = await Client.ExecuteAcclaro<List<OrderDto>>(request);
+        var result = await Client.ExecuteWithErrorHandling<List<OrderDto>>(request);
         return new ListOrdersResponse()
         {
             Orders = result.Select(x => new OrderResponse(x))
@@ -197,7 +193,7 @@ public class OrderActions : AcclaroInvocable
     public async Task<OrderResponse> GetOrder([ActionParameter] OrderRequest input)
     {
         var request = new AcclaroRequest($"/orders/{input.Id}", Method.Get, Creds);
-        var response = await Client.ExecuteAcclaro<OrderDto>(request);
+        var response = await Client.ExecuteWithErrorHandling<OrderDto>(request);
 
         return new(response);
     }
@@ -208,7 +204,7 @@ public class OrderActions : AcclaroInvocable
         try
         {
             var request = new AcclaroRequest($"/orders/{input.Id}", Method.Get, Creds);
-            var response = await Client.ExecuteAcclaro<OrderDto>(request);
+            var response = await Client.ExecuteWithErrorHandling<OrderDto>(request);
         }
         catch
         {
@@ -222,14 +218,14 @@ public class OrderActions : AcclaroInvocable
     public Task DeleteOrder([ActionParameter] OrderRequest input)
     {
         var request = new AcclaroRequest($"/orders/{input.Id}", Method.Delete, Creds);
-        return Client.ExecuteAcclaro(request);
+        return Client.ExecuteWithErrorHandling(request);
     }
 
     [Action("Submit order", Description = "Submit order")]
     public Task SubmitOrder([ActionParameter] OrderRequest input)
     {
         var request = new AcclaroRequest($"/orders/{input.Id}/submit", Method.Post, Creds);
-        return Client.ExecuteAcclaro(request);
+        return Client.ExecuteWithErrorHandling(request);
     }
 
     [Action("Add order comment", Description = "Add a new comment to an order")]
@@ -237,7 +233,7 @@ public class OrderActions : AcclaroInvocable
     {
         var request = new AcclaroRequest($"/orders/{input.Id}/comment", Method.Post, Creds);
         request.AddParameter("comment", newComment.Comment);
-        return Client.ExecuteAcclaro(request);
+        return Client.ExecuteWithErrorHandling(request);
     }
 
     [Action("Update order comment", Description = "Updates an exisitng order comment (note: changes comment ID)")]
@@ -245,7 +241,7 @@ public class OrderActions : AcclaroInvocable
     {
         var request = new AcclaroRequest($"/orders/{input.Id}/comment/{comment.CommentId}", Method.Post, Creds);
         request.AddParameter("comment", newComment.Comment);
-        return Client.ExecuteAcclaro(request);
+        return Client.ExecuteWithErrorHandling(request);
     }
 
     [Action("Get order comments", Description = "Get a list of all comments attached to an order")]
@@ -256,7 +252,7 @@ public class OrderActions : AcclaroInvocable
         if (format.Format != null)
             request.AddQueryParameter("format", format.Format);
 
-        var result = await Client.ExecuteAcclaro<List<CommentDto>>(request);
+        var result = await Client.ExecuteWithErrorHandling<List<CommentDto>>(request);
 
         return new ListCommentsResponse()
         {

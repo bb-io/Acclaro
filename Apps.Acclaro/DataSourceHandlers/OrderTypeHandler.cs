@@ -15,7 +15,7 @@ public class OrderTypeHandler : AcclaroInvocable, IAsyncDataSourceHandler
         CancellationToken cancellationToken)
     {
         var request = new AcclaroRequest("/info/order-types", Method.Get, Creds);
-        var result = await Client.ExecuteAcclaro<List<OrderTypeDto>>(request);
+        var result = await Client.ExecuteWithErrorHandling<List<OrderTypeDto>>(request);
 
         return result
             .Where(x => context.SearchString == null ||

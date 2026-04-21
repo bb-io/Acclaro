@@ -15,7 +15,7 @@ public class SourceLanguageHandler : AcclaroInvocable, IAsyncDataSourceHandler
         CancellationToken cancellationToken)
     {
         var request = new AcclaroRequest("/info/language-pairs", Method.Get, Creds);
-        var result = await Client.ExecuteAcclaro<List<LanguageCombinationDto>>(request);
+        var result = await Client.ExecuteWithErrorHandling<List<LanguageCombinationDto>>(request);
 
         return result
             .Where(x => x.Source.Code != null && x.Target.Code != null)

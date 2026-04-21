@@ -18,7 +18,7 @@ public class ProgramsHandler : AcclaroInvocable, IAsyncDataSourceHandler
     CancellationToken cancellationToken)
     {
         var request = new AcclaroRequest("/programs/list", Method.Get, Creds);
-        var result = await Client.ExecuteAcclaro<List<ProgramDto>>(request);
+        var result = await Client.ExecuteWithErrorHandling<List<ProgramDto>>(request);
 
         return result
             .Where(x =>

@@ -21,7 +21,7 @@ public class StringActions : AcclaroInvocable
     public async Task<ListAllStringsResponse> ListAllStrings([ActionParameter] OrderRequest input)
     {
             var request = new AcclaroRequest($"/orders/{input.Id}/strings-info", Method.Get, Creds);
-            var result = await Client.ExecuteAcclaro<List<StringDto>>(request);
+            var result = await Client.ExecuteWithErrorHandling<List<StringDto>>(request);
             return new ListAllStringsResponse()
             {
                 Strings = result
@@ -47,7 +47,7 @@ public class StringActions : AcclaroInvocable
                         }
                     }
                 });
-            return Client.ExecuteAcclaro(request);
+            return Client.ExecuteWithErrorHandling(request);
         }
 
     //[Action("Get string", Description = "Get string by ID")]
