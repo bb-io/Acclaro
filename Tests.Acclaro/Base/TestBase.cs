@@ -1,6 +1,7 @@
 ﻿using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace Acclaro.Base
 {
@@ -29,6 +30,11 @@ namespace Acclaro.Base
             };
 
             FileManager = new FileManager();
+        }
+
+        protected static void PrintJsonResult(object result)
+        {
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
         }
     }
 }

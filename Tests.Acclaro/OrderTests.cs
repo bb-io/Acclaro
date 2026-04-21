@@ -1,6 +1,7 @@
 ﻿using Acclaro.Base;
 using Apps.Acclaro.Actions;
 using Apps.Acclaro.Models.Requests.Orders;
+using Blackbird.Applications.Sdk.Common.Exceptions;
 
 namespace Tests.Acclaro
 {
@@ -53,6 +54,48 @@ namespace Tests.Acclaro
             Console.WriteLine($"Created Order ID: {Newtonsoft.Json.JsonConvert.SerializeObject(result)}");
 
             Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public async Task SearchOrders_ReturnsOrders()
+        {
+            // Arrange
+            var action = new OrderActions(InvocationContext);
+            var input = new SearchOrderRequest { };
+
+            // Act
+            var result = await action.SearchOrders(input);            
+            
+            // Assert
+            PrintJsonResult(result);
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public async Task GetOrder_ExistingOrder_ReturnsOrder()
+        {
+            // Arrange
+            var action = new OrderActions(InvocationContext);
+            var orderRequest = new OrderRequest { Id = "90655" };
+
+            // Act
+            var result = await action.GetOrder(orderRequest);
+
+            // Assert
+            PrintJsonResult(result);
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public async Task GetOrder_NonExistingOrder_ThrowsMisconfigException()
+        {
+            // Arrange
+            var action = new OrderActions(InvocationContext);
+            var orderRequest = new OrderRequest { Id = "9065511111111" };
+
+            // Act & Assert
+            await Assert.ThrowsExceptionAsync<PluginMisconfigurationException>(async () => 
+                await action.GetOrder(orderRequest));
         }
     }
 }

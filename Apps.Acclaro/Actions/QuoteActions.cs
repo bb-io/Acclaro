@@ -17,7 +17,7 @@ public class QuoteActions : AcclaroInvocable
     public Task GetQuote([ActionParameter] OrderRequest input)
     {
             var request = new AcclaroRequest($"/orders/{input.Id}/quote", Method.Get, Creds);
-            return Client.ExecuteAcclaro(request);
+            return Client.ExecuteWithErrorHandling(request);
         }
 
     //[Action("Get quote details", Description = "Get quote details by order ID")]
@@ -33,13 +33,13 @@ public class QuoteActions : AcclaroInvocable
     public Task ApproveQuote([ActionParameter] OrderRequest input)
     {
             var request = new AcclaroRequest($"/orders/{input.Id}/quote-approve", Method.Post, Creds);
-            return Client.ExecuteAcclaro(request);
+            return Client.ExecuteWithErrorHandling(request);
         }
 
     [Action("Decline quote", Description = "Decline an order for which a quote was requested")]
     public Task DeclineQuote([ActionParameter] OrderRequest input)
     {
             var request = new AcclaroRequest($"/orders/{input.Id}/quote-decline", Method.Post, Creds);
-            return Client.ExecuteAcclaro(request);
+            return Client.ExecuteWithErrorHandling(request);
         }
 }

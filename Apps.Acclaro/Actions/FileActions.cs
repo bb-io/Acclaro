@@ -45,7 +45,7 @@ public class FileActions : AcclaroInvocable
         var fileStream = await _fileManagementClient.DownloadAsync(file.File);
         var fileBytes = await fileStream.GetByteData();
         request.AddFile("file", fileBytes, file.File.Name);
-        var response = await Client.ExecuteAcclaro<FileInfoDtoMultipleTarget>(request);
+        var response = await Client.ExecuteWithErrorHandling<FileInfoDtoMultipleTarget>(request);
 
         var id = response.Fileid;
 
@@ -59,21 +59,21 @@ public class FileActions : AcclaroInvocable
 
             var callbackRequest = new AcclaroRequest($"/orders/{input.Id}/files/{id}/callback", Method.Post, Creds);
             callbackRequest.AddParameter("url", builder.Uri.ToString());
-            await Client.ExecuteAcclaro(callbackRequest);
+            await Client.ExecuteWithErrorHandling(callbackRequest);
         }
 
         if (file.CallbackEmail != null)
         {
             var emailRequest = new AcclaroRequest($"/orders/{input.Id}/files/{id}/email", Method.Post, Creds);
             emailRequest.AddParameter("email", file.CallbackEmail);
-            await Client.ExecuteAcclaro(emailRequest);
+            await Client.ExecuteWithErrorHandling(emailRequest);
         }
 
         if (file.ReviewUrl != null)
         {
             var reviewRequest = new AcclaroRequest($"/orders/{input.Id}/files/{id}/review-url", Method.Post, Creds);
             reviewRequest.AddParameter("url", file.ReviewUrl);
-            await Client.ExecuteAcclaro(reviewRequest);
+            await Client.ExecuteWithErrorHandling(reviewRequest);
         }
 
         return new(response);
@@ -89,7 +89,7 @@ public class FileActions : AcclaroInvocable
         if (search.SourceLanguage != null) request.AddQueryParameter("sourcelang", string.Join(',', search.SourceLanguage));
         if (search.TargetLanguage != null) request.AddQueryParameter("targetlang", string.Join(',', search.TargetLanguage));
 
-        var response = await Client.ExecuteAcclaro<List<FileInfoDto>>(request);
+        var response = await Client.ExecuteWithErrorHandling<List<FileInfoDto>>(request);
         return new SearchFilesResponse
         {
             Files = response.Select(x => new FileInfoResponse(x))
@@ -101,7 +101,7 @@ public class FileActions : AcclaroInvocable
         [ActionParameter] FileRequest file)
     {
         var request = new AcclaroRequest($"/orders/{input.Id}/files/{file.FileId}/status", Method.Get, Creds);
-        var response = await Client.ExecuteAcclaro<FileInfoDto>(request);
+        var response = await Client.ExecuteWithErrorHandling<FileInfoDto>(request);
         return new(response);
     }
 
@@ -124,7 +124,7 @@ public class FileActions : AcclaroInvocable
         [ActionParameter] FileRequest file)
     {
         var request = new AcclaroRequest($"/orders/{input.Id}/files-info", Method.Get, Creds);
-        var response = await Client.ExecuteAcclaro<List<FileInfoDto>>(request);
+        var response = await Client.ExecuteWithErrorHandling<List<FileInfoDto>>(request);
         var sourcefileinfo =  response.SingleOrDefault(x => x.Targetfile.ToString() == file.FileId);
         return new(sourcefileinfo);
     }

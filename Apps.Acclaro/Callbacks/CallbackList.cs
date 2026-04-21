@@ -26,7 +26,7 @@ public class CallbackList(InvocationContext invocationContext) : AcclaroInvocabl
         var orderId = webhookRequest.QueryParameters["orderId"];
 
         var request = new AcclaroRequest($"/orders/{orderId}", Method.Get, Creds);
-        var response = await Client.ExecuteAcclaro<OrderDto>(request);
+        var response = await Client.ExecuteWithErrorHandling<OrderDto>(request);
         var result = new OrderResponse(response);
         
         if (orderStatus != null && response.Status != orderStatus)
@@ -103,7 +103,7 @@ public class CallbackList(InvocationContext invocationContext) : AcclaroInvocabl
         var fileId = webhookRequest.QueryParameters["fileId"];
 
         var request = new AcclaroRequest($"/orders/{orderId}/files/{fileId}/status", Method.Get, Creds);
-        var response = await Client.ExecuteAcclaro<FileInfoDto>(request);
+        var response = await Client.ExecuteWithErrorHandling<FileInfoDto>(request);
         var fileInfo =  new FileInfoResponse(response);
 
         if (fileStatus != null && response.Status != fileStatus)
