@@ -5,17 +5,14 @@ using RestSharp;
 
 namespace Apps.Acclaro.DataSourceHandlers;
 
-public class OrderHandler : AcclaroInvocable, IAsyncDataSourceHandler
+public class OrderHandler(InvocationContext invocationContext)
+    : AcclaroInvocable(invocationContext), IAsyncDataSourceHandler
 {
-    public OrderHandler(InvocationContext invocationContext) : base(invocationContext)
-    {
-    }
-
     public async Task<Dictionary<string, string>> GetDataAsync(DataSourceContext context,
         CancellationToken cancellationToken)
     {
         var request = new AcclaroRequest("/orders", Method.Get, Creds);
-        var orders = await Client.ExecutePaginatedAcclaro<OrderDto>(request);
+        var orders = await Client.ExecuteWithErrorHandling<List<OrderDto>>(request);
 
         return orders
             .Where(x => context.SearchString == null ||
