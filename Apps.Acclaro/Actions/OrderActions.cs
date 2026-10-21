@@ -166,6 +166,18 @@ public class OrderActions(InvocationContext invocationContext) : AcclaroInvocabl
         return new(result);
     }
 
+    [Action("Add tags to order", Description = "Add one or more tags to an order")]
+    public async Task<OrderResponse> AddTagsToOrder(
+    [ActionParameter] OrderRequest order,
+    [ActionParameter] AddOrderTagsRequest input)
+    {
+        var request = new AcclaroRequest($"/orders/{order.Id}/tag", Method.Post, Creds);
+        request.AddParameter("tag", input.Tags);
+
+        var response = await Client.ExecuteWithErrorHandling<OrderDto>(request);
+        return new OrderResponse(response);
+    }
+
     [Action("Get programs list", Description = "Get the list of all programs")]
     public async Task<IEnumerable<ProgramDto>> GetProgramsList()
     {
