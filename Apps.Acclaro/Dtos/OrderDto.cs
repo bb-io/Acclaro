@@ -122,26 +122,47 @@ public class OrderDto
     //[JsonProperty("invoicedue")]
     //public string Invoicedue { get; set; }
 
-    //[JsonProperty("in_preparation")]
-    //public DateTime InPreparation { get; set; }
+    [JsonProperty("in_preparation")]
+    public string? InPreparation { get; set; }
 
-    //[JsonProperty("in_progress")]
-    //public string InProgress { get; set; }
+    [JsonProperty("in_progress")]
+    public string? InProgress { get; set; }
 
-    //[JsonProperty("in_review")]
-    //public string InReview { get; set; }
+    [JsonProperty("in_review")]
+    public string? InReview { get; set; }
 
-    //[JsonProperty("completed")]
-    //public string Completed { get; set; }
+    [JsonProperty("completed")]
+    public string? Completed { get; set; }
 
-    //[JsonProperty("canceled")]
-    //public string Canceled { get; set; }
+    [JsonProperty("canceled")]
+    public string? Canceled { get; set; }
 
-    //[JsonProperty("getting_quote")]
-    //public string GettingQuote { get; set; }
+    [JsonProperty("getting_quote")]
+    public string? GettingQuote { get; set; }
 
-    //[JsonProperty("needs_approval")]
-    //public string NeedsApproval { get; set; }
+    [JsonProperty("needs_approval")]
+    public string? NeedsApproval { get; set; }
+
+    [JsonProperty("status_in_prep_at")]
+    public string? StatusInPreparationAt { get; set; }
+
+    [JsonProperty("status_in_progress_at")]
+    public string? StatusInProgressAt { get; set; }
+
+    [JsonProperty("status_in_review_at")]
+    public string? StatusInReviewAt { get; set; }
+
+    [JsonProperty("status_completed_at")]
+    public string? StatusCompletedAt { get; set; }
+
+    [JsonProperty("status_canceled_at")]
+    public string? StatusCanceledAt { get; set; }
+
+    [JsonProperty("status_getting_quote_at")]
+    public string? StatusGettingQuoteAt { get; set; }
+
+    [JsonProperty("status_needs_approval_at")]
+    public string? StatusNeedsApprovalAt { get; set; }
 
     [JsonProperty("comments")]
     public string Comments { get; set; }
