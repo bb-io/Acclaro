@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <Product>My Acclaro</Product>
     <Description>Streamlines translation workflows for your enterprise from order creation through review.</Description>
-    <Version>1.1.16</Version>
+    <Version>1.1.17</Version>
     <AssemblyName>Apps.Acclaro</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
@@ -16,5 +16,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\README.md" Link="README.md" CopyToOutputDirectory="Always" />
   </ItemGroup>
 </Project>
